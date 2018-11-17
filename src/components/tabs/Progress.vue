@@ -1,5 +1,6 @@
 <template>
   <div id="wrapper">
+    <swiperPic></swiperPic>
     <div id="videoBox" class="box">
       <div style="display:inline-block;">
         <video src="video.mp4" id="video" controls ></video>
@@ -26,9 +27,11 @@
   </div>
 </template>
 <script>
-import {jqPaginator} from '../../assets/jqpaginator.min.js'
+import { jqPaginator } from '../../assets/jqpaginator.min.js'
 import $ from 'jquery'
+import swiperPic from './SwiperPic'
 export default {
+  components: { swiperPic },
   data () {
     return {
       speed: '',
@@ -58,7 +61,7 @@ export default {
     },
     getTrace () {
       let _this = this
-      $.getJSON('record.json').then((ret) => {
+      $.getJSON('/static/pic/record2.json').then((ret) => {
         _this.totaldata = ret.steps
         _this.totalCount = ret.steps.length
       })
@@ -121,7 +124,7 @@ export default {
         return
       }
       this.pageChangeEvent(targetPage)
-    }
+    },
   },
   mounted () {
     let _this = this
