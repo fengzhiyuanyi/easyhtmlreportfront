@@ -12,7 +12,7 @@
           <div class="col-lg-12">
             <div class="swiper-container">
               <div class="swiper-wrapper">
-                <div class="swiper-slide" v-for="(slide, index) in virtualData.slides" :key="index" :style="{left: `${virtualData.offset}px`, width: `730px` }"><img :src="slide"/></div>
+                <div class="swiper-slide" v-for="(slide, index) in virtualData.slides" :key="index" :style="{left: `${virtualData.offset}px`}"><img :src="slide" :width="imgWith"/></div>
               </div>
               <div class="swiper-scrollbar"></div>
             </div>
@@ -75,9 +75,9 @@ export default {
     }
   },
   computed: {
-    // swiper() {
-    //   return this.$refs.mySwiper.swiper
-    // }
+    imgWith(){
+      return (this.swiper.width/3)
+    }
   },
   created(){
     $.ajax({
@@ -101,20 +101,11 @@ export default {
     this.swiper = new Swiper('.swiper-container', {
       keyboard : true,
       mousewheel: true,
-      spaceBetween : 200,
+      observer:true,//修改swiper自己或子元素时，自动初始化swiper
+      observeParents:true,//修改swiper的父元素时，自动初始化swiper
+      spaceBetween : 100,
       slidesPerView: 3,
-      effect : 'coverflow',
-      // slidesPerView: 3,
-      // centeredSlides: true,
-      coverflowEffect: {
-        rotate: 10,
-        stretch: 100,
-        depth: 60,
-        modifier: 1,
-        slideShadows : true
-      },
       virtual: {
-        addSlidesAfter: 1,
         slides: this.slides,
         renderExternal: (data)=> {
           this.virtualData = data;
