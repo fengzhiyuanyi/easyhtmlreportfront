@@ -4,22 +4,22 @@
       <div class="col-lg-1 anchor">
         <h2>事件点</h2>
         <div class="list-group">
-          <a href="#" class="list-group-item anchor-li" v-for="(item, index) in anchorPoint" :key="index" @click="picTo(item.value)">{{item.text}}</a>
+          <a href="#" class="list-group-item anchor-li" v-for="(item, index) in eventPoint" :key="index" @click="picTo(item.value)">{{item.text}}</a>
         </div>
       </div>
       <div class="col-lg-11">
         <div class="row">
           <div class="col-lg-12">
-            <div>
-              <swiper :options="swiperOption" ref="mySwiper" >
-                <div class="swiper-button-prev" slot="button-prev"></div>
-                <div class="swiper-button-next" slot="button-next"></div>
-                <div class="swiper-scrollbar"   slot="scrollbar"></div>
-              </swiper>
+            <div class="swiper-container">
+              <div class="swiper-wrapper">
+                <div class="swiper-slide" v-for="(slide, index) in virtualData.slides" :key="index" :style="{left: `${virtualData.offset}px`, width: `730px` }"><img :src="slide"/></div>
+              </div>
+              <div class="swiper-scrollbar"></div>
             </div>
+
           </div>
           <div class="col-lg-12" style="text-align: center; font-size: 20px">
-            <span>{{activePic}}/{{picCount}}</span>
+            <span>{{activeIndex+2}}/{{picCount}}</span>
           </div>
           <div class="col-lg-2 goPic">
               <div class="row">
@@ -32,76 +32,52 @@
                   </div>
                 </div>
               </div>
-            </div>
           </div>
         </div>
       </div>
     </div>
+  </div>
 </template>
 
 <script>
 import 'swiper/dist/css/swiper.css'
-import { swiper, swiperSlide } from 'vue-awesome-swiper'
+// import { swiper, swiperSlide } from 'vue-awesome-swiper'
+import Swiper from 'swiper/dist/js/swiper.esm.bundle'
 
 export default {
-  components: {
-    swiper,
-    swiperSlide
-  },
+  // components: {
+  //   swiper,
+  //   swiperSlide
+  // },
   props: {
   },
   data () {
     return {
-      swiperData: [],
-      activePic: 1,
-      picNum: 2,
-      picCount: 0,
-      anchorPoint: [
-        {text: '第1张', value: 1},
-        {text: '第5张', value: 5},
-        {text: '第10张', value: 10},
-        {text: '第15张', value: 15},
-        {text: '第20张', value: 20}
+      eventPoint: [
+        {text:'第1张图片',value:1},
+        {text:'第10张图片',value:10},
+        {text:'第20张图片',value:20},
+        {text:'第500张图片',value:500},
+        {text:'第100张图片',value:100},
+        {text:'第200张图片',value:200},
+        {text:'第500张图片',value:500},
+        {text:'第700张图片',value:700},
+        {text:'第900张图片',value:900},
+        {text:'第1000张图片',value:1000},
       ],
-      swiperOption: {
-        init: false,
-        virtual: {
-          slides: [],
-        },
-        initialSlide: 1,
-        slidesPerView: 3,
-        spaceBetween: 100,
-        keyboard: true,
-        effect: 'coverflow',
-        coverflowEffect: {
-          rotate: 10,
-          stretch: 10,
-          depth: 100,
-          modifier: 1,
-          slideShadows: true
-        },
-        scrollbar: {
-          el: '.swiper-scrollbar',
-          draggable: true,
-          hide: true
-        },
-        navigation: {
-          nextEl: '.swiper-button-next',
-          prevEl: '.swiper-button-prev'
-        },
-        on: {
-          transitionEnd: () => {
-            this.activePic = this.swiper.activeIndex;
-            console.log(this.activePic);
-          },
-        },
+      swiper: null,
+      activeIndex: 1,
+      picNum: 1,
+      slides:[],
+      virtualData: {
+        slides: [],
       },
     }
   },
   computed: {
-    swiper() {
-      return this.$refs.mySwiper.swiper
-    }
+    // swiper() {
+    //   return this.$refs.mySwiper.swiper
+    // }
   },
   created(){
     $.ajax({
@@ -113,20 +89,54 @@ export default {
       }
     });
     const slides = [];
-    slides.push("<div></div>");
+    // slides.push("<div></div>");
     for (let i = 0; i < this.swiperData.length; i += 1) {
       const srcs = '/static/pic/' + this.swiperData[i].screenshot;
-      slides.push("<img src=" +  srcs + "/>")
+      slides.push(srcs)
     }
-    slides.push("<div></div>");
-    this.swiperOption.virtual.slides = slides;
+    // slides.push("<div></div>");
+    this.slides = slides;
   },
   mounted() {
-    this.swiper.init();
+    this.swiper = new Swiper('.swiper-container', {
+      keyboard : true,
+      mousewheel: true,
+      spaceBetween : 200,
+      slidesPerView: 3,
+      effect : 'coverflow',
+      // slidesPerView: 3,
+      // centeredSlides: true,
+      coverflowEffect: {
+        rotate: 10,
+        stretch: 100,
+        depth: 60,
+        modifier: 1,
+        slideShadows : true
+      },
+      virtual: {
+        addSlidesAfter: 1,
+        slides: this.slides,
+        renderExternal: (data)=> {
+          this.virtualData = data;
+        },
+      },
+      scrollbar: {
+        el: '.swiper-scrollbar',
+        hide: true,
+        draggable: true,
+      },
+      on:{
+        transitionEnd: () =>{
+          this.activeIndex = this.swiper.activeIndex
+        },
+      },
+    });
+    // this.swiper.virtual.prependSlide();
+    this.swiper.virtual.appendSlide();
   },
   methods: {
     picTo (num) {
-      this.swiper.slideTo(parseInt(num), 1000, false);
+      this.swiper.slideTo(parseInt(num)-2, 1000, false);
     },
   }
 }
