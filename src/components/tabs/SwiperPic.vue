@@ -19,7 +19,7 @@
             </div>
           </div>
           <div class="col-lg-12" style="text-align: center; font-size: 20px">
-            <span>{{picNum}}/{{picCount}}</span>
+            <span>{{activePic}}/{{picCount}}</span>
           </div>
           <div class="col-lg-2 goPic">
               <div class="row">
@@ -52,7 +52,8 @@ export default {
   },
   data () {
     return {
-      activeIndex: 1,
+      swiperData: [],
+      activePic: 1,
       picNum: 2,
       picCount: 0,
       anchorPoint: [
@@ -63,27 +64,13 @@ export default {
         {text: '第20张', value: 20}
       ],
       swiperOption: {
+        init: false,
         virtual: {
-          slides: (function () {
-            let data = null;
-            $.ajax({
-              url: '/static/pic/record2.json',
-              async: false,
-              success: (response) => {
-               data = response.steps;
-              }
-            });
-            const slides = [];
-            for (let i = 0; i < data.length; i += 1) {
-              const srcs = '/static/pic/' + data[i].screenshot;
-              slides.push("<img class='swiper-lazy' src=" +  srcs + "/>")
-            }
-            return slides;
-          }()),
+          slides: [],
         },
-        initialSlide: 0,
+        initialSlide: 1,
         slidesPerView: 3,
-        spaceBetween: 200,
+        spaceBetween: 100,
         keyboard: true,
         effect: 'coverflow',
         coverflowEffect: {
@@ -104,18 +91,11 @@ export default {
         },
         on: {
           transitionEnd: () => {
-            this.activeIndex = this.swiper.activeIndex;
-            this.picNum = this.activeIndex + 2;
-          }
-        }
+            this.activePic = this.swiper.activeIndex;
+            console.log(this.activePic);
+          },
+        },
       },
-      swiper111: {
-        fontSize: '30px',
-        textAlign: 'center',
-        lineHeight: '460px',
-        height: '460px',
-        backgroundColor: 'aqua'
-      }
     }
   },
   computed: {
@@ -123,9 +103,30 @@ export default {
       return this.$refs.mySwiper.swiper
     }
   },
+  created(){
+    $.ajax({
+      url: '/static/pic/record2.json',
+      async: false,
+      success: (response) => {
+        this.swiperData = response.steps;
+        this.picCount = this.swiperData.length
+      }
+    });
+    const slides = [];
+    slides.push("<div></div>");
+    for (let i = 0; i < this.swiperData.length; i += 1) {
+      const srcs = '/static/pic/' + this.swiperData[i].screenshot;
+      slides.push("<img src=" +  srcs + "/>")
+    }
+    slides.push("<div></div>");
+    this.swiperOption.virtual.slides = slides;
+  },
+  mounted() {
+    this.swiper.init();
+  },
   methods: {
     picTo (num) {
-      this.swiper.slideTo(num - 2, 1000, false);
+      this.swiper.slideTo(parseInt(num), 1000, false);
     },
   }
 }
