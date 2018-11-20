@@ -61,7 +61,7 @@ export default {
     },
     getTrace () {
       let _this = this
-      $.getJSON('/static/pic/record2.json').then((ret) => {
+      $.getJSON('record.json').then((ret) => {
         _this.totaldata = ret.steps
         _this.totalCount = ret.steps.length
       })
