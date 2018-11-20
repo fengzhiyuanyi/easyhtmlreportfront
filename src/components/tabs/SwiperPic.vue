@@ -81,7 +81,7 @@ export default {
   },
   created(){
     $.ajax({
-      url: '/static/pic/record2.json',
+      url: 'record.json',
       async: false,
       success: (response) => {
         this.swiperData = response.steps;
@@ -91,7 +91,7 @@ export default {
     const slides = [];
     // slides.push("<div></div>");
     for (let i = 0; i < this.swiperData.length; i += 1) {
-      const srcs = '/static/pic/' + this.swiperData[i].screenshot;
+      const srcs = this.swiperData[i].screenshot;
       slides.push(srcs)
     }
     // slides.push("<div></div>");

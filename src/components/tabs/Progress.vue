@@ -9,25 +9,9 @@
         <label>倍播放速度</label>
       </div>
     </div>
-    <div class="row">
-        <div class="col-md-4" v-for="(v, index) in nova" v-bind:key="index">
-          <div id="pic">
-            <div><b>{{index+1}}</b> {{v.time}}</div>
-            <img class="img-thumbnail" :src="v.screenshot">
-          </div>
-        </div>
-    </div>
-    <div class="jqPager" v-bind:class="{hiddenPager:hiddenPager}">
-      <ul id="jqPage" class="pagination"></ul>
-      <div class="jumpBox">
-        <input type="number" class="jumppage" id="jumpPageIndex" />
-        <a href="javascript:;" class="jumpbtn" v-on:click="pageSkip()">跳转</a>
-      </div>
-    </div>
   </div>
 </template>
 <script>
-import { jqPaginator } from '../../assets/jqpaginator.min.js'
 import $ from 'jquery'
 import swiperPic from './SwiperPic'
 export default {
@@ -58,94 +42,7 @@ export default {
     },
     changeshow () {
       this.show = !this.show
-    },
-    getTrace () {
-      let _this = this
-      $.getJSON('record.json').then((ret) => {
-        _this.totaldata = ret.steps
-        _this.totalCount = ret.steps.length
-      })
-    },
-    initPager: function () {
-      $('#jqPage').jqPaginator({
-        visiblePages: 1,
-        currentPage: 1,
-        totalPages: 1,
-        first: '<li class="page-item" id="first"><a class="page-link" href="javascript:void(0);">首页</a></li>',
-        prev: '<li class="page-item" id="prev"><a class="page-link" href="javascript:void(0);">上一页 </a></li>',
-        next: '<li class="page-item" id="next"><a class="page-link" href="javascript:void(0);">下一页</a></li>',
-        last: '<li class="page-item" id="last"><a class="page-link" href="javascript:void(0);">尾页</a></li>',
-        page: '<li class="page-item" class="page"><a class="page-link" href="javascript:void(0);">{{page}}</a></li>'
-      })
-    },
-
-    // 获取数据并根据结果配置分页
-    getData: function () {
-      var _this = this
-      this.nova = this.totaldata.slice((this.query.pageIndex - 1) * this.query.pageSize, this.query.pageIndex * this.query.pageSize)
-      // 核心配置在此部，根据后台返回数据控制分页器该如何显示
-      // 想要完全掌握这个分页器，你可以研究下jgPaginator.js源码，很容易修改。
-      $('#jqPage').jqPaginator('option', {
-        totalCounts: _this.totalCount, // 后台返回数据总数
-        pageSize: _this.query.pageSize, // 每一页显示多少条内容
-        currentPage: _this.query.pageIndex, // 现在的页码
-        visiblePages: 10, // 最多显示几页
-
-        // 翻页时触发的事件
-        onPageChange: function (num) {
-          // app.query.pageIndex = num;
-          _this.pageChangeEvent(num) // 调用翻页事件
-        }
-      })
-    },
-    // 翻页或者跳页事件
-    pageChangeEvent: function (pageIndex) {
-      this.query.pageIndex = Number(pageIndex)
-      this.getData()
-    },
-
-    // 跳页-选用功能，可有可无
-    pageSkip: function () {
-      var maxPage = 1 // 默认可以跳的最大页码
-      var targetPage = document.getElementById('jumpPageIndex').value // 目的页面
-      if (!targetPage) {
-        alert('请输入页码')
-        return
-      }
-
-      // 计算最大可跳页数
-      maxPage = Math.floor(this.totalCount / this.query.pageSize)
-      if (maxPage < 1) {
-        maxPage = 1
-      }
-
-      if (targetPage > maxPage) {
-        alert('超过最大页数了，当前最大页数是' + maxPage)
-        return
-      }
-      this.pageChangeEvent(targetPage)
-    },
-  },
-  mounted () {
-    let _this = this
-    this.getTrace()
-    setTimeout(() => {
-      _this.initPager()
-    }, 50)
-    setTimeout(() => {
-      _this.getData()
-    }, 1000)
-    let ha = $('#videoBox').offset().top + $('#videoBox').height()
-    $(window).scroll(() => {
-      if ($(window).scrollTop() > ha + 300) {
-        $('#videoBox').css('bottom', '0')
-      } else if ($(window).scrollTop() < ha) {
-        $('#videoBox').removeClass('out').addClass('in')
-      } else {
-        $('#videoBox').removeClass('in').addClass('out')
-        $('#videoBox').css('bottom', '-500px')
-      }
-    })
+    }
   }
 }
 
