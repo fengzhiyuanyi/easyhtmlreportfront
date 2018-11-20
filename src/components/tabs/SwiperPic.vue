@@ -122,7 +122,6 @@ export default {
         },
       },
     });
-    // this.swiper.virtual.prependSlide();
     this.swiper.virtual.appendSlide();
   },
   methods: {
