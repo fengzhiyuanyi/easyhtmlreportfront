@@ -15,6 +15,7 @@
     "paginator": "^1.0.0",
     "papaparse": "^4.6.1",
     "popper.js": "^1.14.4",
+    "swiper": "^4.4.2",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1"
   },
