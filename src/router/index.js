@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Perf from '@/components/tabs/Perf'
 import Trace from '@/components/tabs/Trace'
-import Progress from '@/components/tabs/Progress'
+import screenshot from '@/components/tabs/screenshot'
 
 Vue.use(Router)
 
@@ -10,7 +10,7 @@ export default new Router({
   routes: [
     {
       path: '/',
-      redirect: '/perf'
+      redirect: '/screenshot'
     },
     {
       path: '/perf',
@@ -23,9 +23,9 @@ export default new Router({
       component: Trace
     },
     {
-      path: '/progress',
-      name: 'Progress',
-      component: Progress
+      path: '/screenshot',
+      name: 'screenshot',
+      component: screenshot
     }
   ]
 })

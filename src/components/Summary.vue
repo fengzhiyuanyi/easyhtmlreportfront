@@ -1,78 +1,106 @@
 <template>
-  <div class="container-fluid">
-  	<div class="row summary">
-  		<div class="col-sm-2 m-auto cell">
-  			<div class="row m-auto" style="padding-left: 30px;">
-  					<span><img src="http://arch.s3.netease.com/hzdev-appci/Android.png" style="height:50px;width:50px;"></span>
-  					<div>
-  						<p style="line-height:50px;">{{info.basic_info.app}}</p>
-  					</div>
-  			</div>
-  		</div>
-  		<div class="col-sm-2 m-auto">
-  			<div>
-  				<p>测试设备：{{info.basic_info.device_info.brand}}-{{info.basic_info.device_info.model}}</p>
-  				<p>SDK版本：{{info.basic_info.device_info.sdk}}</p>
-  			</div>
-  		</div>
-  		<div class="col-sm-2 m-auto">
-  			<p>开始时间：{{info.record_info.start_time}}</p>
-  			<p>总计耗时：{{info.record_info.total_time}}</p>
-  		</div>
-  		<div class="col-sm-2 m-auto">
-  			<p>测试步数：{{info.record_info.steps}}</p>
-  		</div>
-  		<div class="col-sm-4 m-auto">
-  			<div>
-  				<p class="results">测试结果: 成功</p>
-  			</div>
-  		</div>
+  <div class="wrapper_main">
+	<div class="Application_information">
+	  <div class="information_header">
+		  <div class="head_title">
+			  <b>应用信息</b>
+		  </div>
+			<div class="pull-right div-btn">
+				<el-button type="primary" icon="el-icon-search" @click="getPdf()">生成PDF</el-button>
+				<el-button type="primary" icon="el-icon-search">资源打包</el-button>
+			</div>
+	  </div>
+	  <div class="information_box">
+		  <ul>
+			  <li>
+				  <img src = "http://arch.s3.netease.com/hzdev-appci/Android.png" alt>
+			  </li>
+		  </ul>
+		  <ul class="information_box_name">
+			  <li>
+				  <b>应用名称: </b>
+				  <span>功能开发中</span><!-- 楚留香 -->
+			  </li>
+			  <li>
+				  <b>测试类型: </b>
+				  <span>标准兼容性测试</span><!-- 标准兼容性测试/Monkey测试 -->
+			  </li>
+		  </ul>
+		  <ul class="information_box_name">
+			  <li>
+				  <b>应用版本: </b>
+				  <span>功能开发中</span><!-- 1.2.6.1 -->
+			  </li>
+			  <li>
+				  <b>应用大小: </b>
+				  <span>功能开发中</span><!-- 11.2 MB -->
+			  </li>
+		  </ul>
+		  <ul class="information_box_name">
+			  <li>
+				  <b>设备名称: </b>
+				  <span>{{info.basic_info.device_info.brand}}-{{info.basic_info.device_info.model}}</span><!-- 华为Mate9 -->
+			  </li>
+			  <li>
+				  <b>设备版本: </b>
+				  <span>{{info.basic_info.device_info.sdk}}</span><!-- Android 7.0 -->
+			  </li>
+		  </ul>
+		  <ul class="information_box_name">
+			  <li>
+				  <b>提测时间: </b>
+				  <span>{{info.record_info.start_time}}</span><!-- 2018-11-21 14:30:20 -->
+			  </li>
+			  <li>
+				  <b>测试用时: </b>
+				  <span>{{info.record_info.total_time}}</span><!-- 1:20:20 s -->
+			  </li>
+		  </ul>
+		  <ul class="information_box_name information_box_name2">
+			  <li>
+				  <b>测试状态: </b>
+				  <span>成功</span>
+			  </li>
+		  </ul>
+	  </div>
   	</div>
   </div>
 </template>
 
 <script>
-import $ from 'jquery'
+import $ from "jquery";
 export default {
-  data () {
+  data() {
     return {
-    	info: {
-    		basic_info: {
-    			app: '111',
-    			device_info: {
-    				brand: '',
-    				model: '',
-    				sdk: ''
-    			}
-    		},
-    		record_info: {
-  				start_time: '',
-  				total_time: '',
-  				steps: ''
-    		}
-    	}
-    }
+      info: {
+        basic_info: {
+          app: "111",
+          device_info: {
+            brand: "",
+            model: "",
+            sdk: ""
+          }
+        },
+        record_info: {
+          start_time: "",
+          total_time: "",
+          steps: ""
+        }
+      }
+    };
   },
-  mounted () {
-  	let _this = this
-  	$.getJSON('info.json').then((ret) => {
-  		_this.info = ret
-  	})
+  mounted() {
+    let _this = this;
+    $.getJSON("info.json").then(ret => {
+      _this.info = ret;
+    });
   }
-}
+};
 </script>
 
 <style scoped>
-	.summary{
-		text-align: center;
-		background-color: #d8d8d8;
-		color: black;
-		height: 140px;
-	}
-
-	.results{
-		font-size: 26px;
-	}
-
-	p {margin-bottom: 0px;}
+.div-btn{
+	padding-top: 15px;
+	padding-right: 25px;
+}
 </style>
