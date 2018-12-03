@@ -20,8 +20,8 @@
       </div>
     </div>
     <div id="floatvideo" v-drag>
-      <video id="video" class="video-js vjs-big-play-centered vjs-big-play-button" preload="true">
-        <source src="./video.mp4" type="video/mp4">
+      <video id="video" class="video-js vjs-big-play-centered vjs-default-skin vjs-loading-spinner" preload="true">
+        <source src="video.mp4" type="video/mp4">
         <p class="vjs-no-js">
           To view this video please enable JavaScript, and consider upgrading to a
           web browser that

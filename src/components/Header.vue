@@ -23,7 +23,7 @@
     <div class="navbar navbar-dark bg-dark shadow-sm">
       <div class="container d-flex justify-content-between">
         <a href="#" class="navbar-brand d-flex align-items-center">
-          <img class="logo sm_img" src="../../assets/APKCI.png" alt style="width: 80px;height: 20px;margin-right: 20px;">
+          <img class="logo sm_img" src="@/assets/APKCI.png" alt style="width: 80px;height: 20px;margin-right: 20px;">
           <strong>兼容性测试报告</strong>
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader"

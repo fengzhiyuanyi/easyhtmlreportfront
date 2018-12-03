@@ -57,11 +57,11 @@ export default {
       this.show = !this.show;
     },
     getPics() {
-        let _this = this;
-        $.getJSON("record.json").then(ret => {
-          _this.totaldata = ret.steps;
-          _this.totalCount = ret.steps.length;
-        });
+      let _this = this;
+      $.getJSON("record.json").then(ret => {
+        _this.totaldata = ret.steps;
+        _this.totalCount = ret.steps.length;
+      });
     },
     initPager: function() {
       $("#jqPage").jqPaginator({
@@ -84,24 +84,28 @@ export default {
     // 获取数据并根据结果配置分页
     getData: function() {
       var _this = this;
-      this.nova = this.totaldata.slice(
-        (this.query.pageIndex - 1) * this.query.pageSize,
-        this.query.pageIndex * this.query.pageSize
-      );
-      // 核心配置在此部，根据后台返回数据控制分页器该如何显示
-      // 想要完全掌握这个分页器，你可以研究下jgPaginator.js源码，很容易修改。
-      $("#jqPage").jqPaginator("option", {
-        totalCounts: _this.totalCount, // 后台返回数据总数
-        pageSize: _this.query.pageSize, // 每一页显示多少条内容
-        currentPage: _this.query.pageIndex, // 现在的页码
-        visiblePages: 10, // 最多显示几页
+      if (this.totaldata.length > 0) {
+        this.nova = this.totaldata.slice(
+          (this.query.pageIndex - 1) * this.query.pageSize,
+          this.query.pageIndex * this.query.pageSize
+        );
+        // 核心配置在此部，根据后台返回数据控制分页器该如何显示
+        // 想要完全掌握这个分页器，你可以研究下jgPaginator.js源码，很容易修改。
+        $("#jqPage").jqPaginator("option", {
+          totalCounts: _this.totalCount, // 后台返回数据总数
+          pageSize: _this.query.pageSize, // 每一页显示多少条内容
+          currentPage: _this.query.pageIndex, // 现在的页码
+          visiblePages: 10, // 最多显示几页
 
-        // 翻页时触发的事件
-        onPageChange: function(num) {
-          // app.query.pageIndex = num;
-          _this.pageChangeEvent(num); // 调用翻页事件
-        }
-      });
+          // 翻页时触发的事件
+          onPageChange: function(num) {
+            // app.query.pageIndex = num;
+            _this.pageChangeEvent(num); // 调用翻页事件
+          }
+        });
+      }else{
+        this.hiddenPager = true;
+      }
     },
     // 翻页或者跳页事件
     pageChangeEvent: function(pageIndex) {
