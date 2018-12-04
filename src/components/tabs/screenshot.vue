@@ -5,7 +5,7 @@
         <div id="pic">
           <img class="img-thumbnail" :src="v.screenshot">
           <strong>{{index+1}}</strong>
-          <div class="pull-right" style="font-weight:bold">{{dateFormat(v.slice(4, 17))}}</div>
+          <div class="pull-right" style="font-weight:bold">{{v.time}}</div>
         </div>
       </div>
     </div>
@@ -37,13 +37,6 @@ export default {
     };
   },
   methods: {
-    dateFormat(dateStr) {
-      var dt = new Date(parseInt(dateStr));
-      var h = dt.getHours();
-      var min = dt.getMinutes();
-      var s = dt.getSeconds();
-      return `${h}:${min}:${s}`;
-    },
     onChange() {
       let video = document.getElementById("video");
       video.playbackRate = Number.parseFloat(this.speed);

@@ -6,8 +6,8 @@
 			  <b>应用信息</b>
 		  </div>
 			<div class="pull-right div-btn">
-				<el-button type="primary" icon="el-icon-search" @click="getPdf()">生成PDF</el-button>
-				<el-button type="primary" icon="el-icon-search">资源打包</el-button>
+				<el-button type="primary" icon="el-icon-document" @click="getPdf()">生成PDF</el-button>
+				<el-button type="primary" icon="el-icon-download" href="*zip*/HTML_Report.zip">资源打包</el-button>
 			</div>
 	  </div>
 	  <div class="information_box">
@@ -43,7 +43,7 @@
 			  </li>
 			  <li>
 				  <b>设备版本: </b>
-				  <span>{{info.basic_info.device_info.sdk}}</span><!-- Android 7.0 -->
+				  <span>Android {{info.basic_info.device_info.version}}</span><!-- Android 7.0 -->
 			  </li>
 		  </ul>
 		  <ul class="information_box_name">

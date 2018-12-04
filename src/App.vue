@@ -198,10 +198,13 @@ export default {
 .video-js .vjs-remaining-time {
   display: none;
 }
-.vjs-button > .vjs-icon-placeholder:before {
+.video-js .vjs-current-time {
+  display: block;
+}
+/* .vjs-button > .vjs-icon-placeholder:before {
   font-size: 1.2em;
-}
-.vjs-playback-rate .vjs-playback-rate-value {
+} */
+/* .vjs-playback-rate .vjs-playback-rate-value {
   line-height: 2.2;
-}
+} */
 </style>
