@@ -82,7 +82,11 @@ export default {
     return {
       info: {
         basic_info: {
-          app: "111",
+					app_info: {
+						size: "0",
+						versionName: "",
+						label: ""
+					},
           device_info: {
             brand: "",
             model: "",
