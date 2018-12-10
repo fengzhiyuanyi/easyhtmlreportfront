@@ -20,7 +20,7 @@
       </div>
     </div>
     <div id="floatvideo" v-drag>
-      <video id="video" class="video-js vjs-big-play-centered vjs-default-skin vjs-loading-spinner" preload="true">
+      <video id="video" class="video-js vjs-big-play-centered vjs-default-skin" preload="true">
         <source src="video.mp4" type="video/mp4">
         <p class="vjs-no-js">
           To view this video please enable JavaScript, and consider upgrading to a
@@ -130,6 +130,7 @@ export default {
 </script>
 
 <style>
+@import url('video.js/dist/video-js.css');
 #floatvideo {
   position: absolute;
   top: 325px;
@@ -176,15 +177,6 @@ export default {
 .vjs-big-play-button .vjs-icon-placeholder {
   font-size: 1.63em;
 }
-/* 加载圆圈 */
-.vjs-loading-spinner {
-  font-size: 2.5em;
-  width: 2em;
-  height: 2em;
-  border-radius: 1em;
-  margin-top: -1em;
-  margin-left: -1.5em;
-}
 .video-js .vjs-time-control {
   display: block;
   padding-left: 0;
@@ -201,10 +193,4 @@ export default {
 .video-js .vjs-current-time {
   display: block;
 }
-/* .vjs-button > .vjs-icon-placeholder:before {
-  font-size: 1.2em;
-} */
-/* .vjs-playback-rate .vjs-playback-rate-value {
-  line-height: 2.2;
-} */
 </style>
