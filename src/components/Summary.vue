@@ -7,7 +7,9 @@
         </div>
         <div class="pull-right div-btn">
           <el-button type="primary" icon="el-icon-document" @click="getPdf()">生成PDF</el-button>
-          <el-button type="primary" icon="el-icon-download" href="log.txt">游戏log</el-button>
+          <a style="margin-left: 10px" href="log.txt" download="log.txt">
+            <el-button type="primary" icon="el-icon-download">游戏log</el-button>
+          </a>
         </div>
       </div>
       <div class="information_box">
@@ -67,6 +69,10 @@
         <ul class="information_box_name information_box_name2">
           <li>
             <b>测试状态:</b>
+            <span>成功</span>
+          </li>
+          <li>
+            <b>发现Bug数量:</b>
             <span>成功</span>
           </li>
         </ul>
