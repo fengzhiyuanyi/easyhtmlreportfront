@@ -7,7 +7,7 @@
         </div>
         <div class="pull-right div-btn">
           <el-button type="primary" icon="el-icon-document" @click="getPdf()">生成PDF</el-button>
-          <a style="margin-left: 10px" href="log.txt" download="log.txt">
+          <a style="margin-left: 10px" href="../../static/log.txt">
             <el-button type="primary" icon="el-icon-download">游戏log</el-button>
           </a>
         </div>
@@ -15,13 +15,13 @@
       <div class="information_box">
         <ul>
           <li>
-            <img src="icon.png" alt>
+            <img src="icon.png" alt="app图标">
           </li>
         </ul>
         <ul class="information_box_name">
           <li>
             <b>应用名称:</b>
-            <span>{{info.basic_info.app_info.label}}</span>
+            <span>{{info.basic_info.app_info.label === ''? '未知':info.basic_info.app_info.label}}</span>
             <!-- 楚留香 -->
           </li>
           <li>
@@ -33,36 +33,36 @@
         <ul class="information_box_name">
           <li>
             <b>应用版本:</b>
-            <span>{{info.basic_info.app_info.versionName}}</span>
+            <span>{{info.basic_info.app_info.versionName === ''? '未知':info.basic_info.app_info.versionName}}</span>
             <!-- 1.2.6.1 -->
           </li>
           <li>
             <b>应用大小:</b>
-            <span>{{info.basic_info.app_info.size}}</span>
+            <span>{{info.basic_info.app_info.size === '0'? '未知':info.basic_info.app_info.size}}</span>
             <!-- 11.2 MB -->
           </li>
         </ul>
         <ul class="information_box_name">
           <li>
             <b>设备名称:</b>
-            <span>{{info.basic_info.device_info.model}}</span>
+            <span>{{info.basic_info.device_info.model === ''? '未知':info.basic_info.app_info.model}}</span>
             <!-- 华为Mate9 -->
           </li>
           <li>
             <b>设备版本:</b>
-            <span>Android {{info.basic_info.device_info.version}}</span>
+            <span>{{info.basic_info.device_info.version === unidefined? '未知':'Android '+ info.basic_info.device_info.version}}</span>
             <!-- Android 7.0 -->
           </li>
         </ul>
         <ul class="information_box_name">
           <li>
             <b>提测时间:</b>
-            <span>{{info.record_info.start_time}}</span>
+            <span>{{info.record_info.start_time === ''? '--:--':info.record_info.start_time}}</span>
             <!-- 2018-11-21 14:30:20 -->
           </li>
           <li>
             <b>测试用时:</b>
-            <span>{{info.record_info.total_time}}</span>
+            <span>{{info.record_info.total_time === ''? '--:--':info.record_info.total_time}}</span>
             <!-- 1:20:20 s -->
           </li>
         </ul>
@@ -73,7 +73,7 @@
           </li>
           <li>
             <b>发现Bug数量:</b>
-            <span>成功</span>
+            <span id="bugcount">{{info.trace_info.trace_count}}</span>
           </li>
         </ul>
       </div>
@@ -103,6 +103,9 @@ export default {
           start_time: "",
           total_time: "",
           steps: ""
+        },
+        trace_info: {
+          trace_count: 0
         }
       }
     };
@@ -138,5 +141,9 @@ export default {
 .div-btn {
   padding-top: 15px;
   padding-right: 25px;
+}
+#bugcount{
+  font-weight:bold;
+	color:#ff9955;
 }
 </style>
