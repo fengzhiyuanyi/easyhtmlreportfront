@@ -5,7 +5,7 @@
         Trace列表 <span style="font-size: small;font-weight: bold"> 共 {{trace_count}} 条</span>
       </div>
       <div style="float: right;">
-        <a target="_blank" href="../../static/log.txt">
+        <a target="_blank" href="log.txt">
           log详情
         </a>
       </div>

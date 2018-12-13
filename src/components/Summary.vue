@@ -7,7 +7,7 @@
         </div>
         <div class="pull-right div-btn">
           <el-button type="primary" icon="el-icon-document" @click="getPdf()">生成PDF</el-button>
-          <a style="margin-left: 10px" href="../../static/log.txt">
+          <a style="margin-left: 10px" href="log.txt">
             <el-button type="primary" icon="el-icon-download">游戏log</el-button>
           </a>
         </div>
