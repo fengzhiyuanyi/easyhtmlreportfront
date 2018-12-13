@@ -7,7 +7,7 @@
         <div class="Application_menu">
           <ul id="menu_title">
             <router-link to="/screenshot" tag="li">游戏截图</router-link>
-            <!-- <router-link to="/progress" tag="li">测试步骤</router-link> -->
+             <router-link to="/progress" tag="li">测试步骤</router-link>
             <router-link to="/perf" tag="li">性能数据</router-link>
             <router-link to="/trace" tag="li">Trace收集</router-link>
           </ul>
