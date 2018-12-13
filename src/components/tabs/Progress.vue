@@ -100,7 +100,7 @@
     },
     created(){
       $.ajax({
-        url: '/static/record.json',
+        url: 'record.json',
         async: false,
         success: (response) => {
           this.swiperData = response.steps;
@@ -110,7 +110,7 @@
       const slides = [];
       const event=[];
       for (let i = 0; i < this.swiperData.length; i += 1) {
-        const srcs = 'static/' + this.swiperData[i].screenshot;
+        const srcs = this.swiperData[i].screenshot;
         const arr=this.swiperData[i].code.split("\n")
         if(arr[1].indexOf("##")!=-1){
           event.push({text:arr[1].split("##")[1],value:(i+1)})
