@@ -1,11 +1,11 @@
 <template>
   <div class="Trace_box">
     <pre v-for="trace in traces" :key="trace">{{trace}}</pre>
+  </div>
 </template>
 <script>
 import $ from "jquery";
 
-const errorOptions = ['CRASH', 'TRACEBACK', 'ERROR'];
 export default {
   data() {
     return {
