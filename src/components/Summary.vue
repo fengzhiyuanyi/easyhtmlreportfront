@@ -73,7 +73,7 @@
           </li>
           <li>
             <b>发现Bug数量:</b>
-            <span id="bugcount">{{info.trace_info.traces_count}}</span>
+            <span id="bugcount">{{info.trace_info.trace_count}}</span>
           </li>
         </ul>
       </div>
@@ -105,7 +105,7 @@ export default {
           steps: ""
         },
         trace_info: {
-          traces_count: 0
+          trace_count: 0
         }
       }
     };
