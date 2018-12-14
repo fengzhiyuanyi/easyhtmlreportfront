@@ -45,7 +45,7 @@
         <ul class="information_box_name">
           <li>
             <b>设备名称:</b>
-            <span>{{info.basic_info.device_info.model === ''? '未知':info.basic_info.app_info.model}}</span>
+            <span>{{info.basic_info.device_info.model === ''? '未知':info.basic_info.device_info.model}}</span>
             <!-- 华为Mate9 -->
           </li>
           <li>
@@ -73,7 +73,7 @@
           </li>
           <li>
             <b>发现Bug数量:</b>
-            <span id="bugcount">{{info.trace_info.trace_count}}</span>
+            <span id="bugcount">{{info.trace_info.traces_count}}</span>
           </li>
         </ul>
       </div>
@@ -105,7 +105,7 @@ export default {
           steps: ""
         },
         trace_info: {
-          trace_count: 0
+          traces_count: 0
         }
       }
     };

@@ -138,6 +138,7 @@ export default {
   width: 100px;
   height: 100px;
   background: #bbbbbb;
+  z-index: 9999;
 }
 
 .router-link-active {

@@ -53,14 +53,22 @@
     methods: {
       getTrace() {
         // let _this = this;
-        $.getJSON("./info.json").then(ret => {
-          this.trace_count = ret.trace_info.trace_count;
-          for (var i = 0; i < ret.trace_info.traces.length; i++) {
+        $.getJSON("info.json").then(ret => {
+          this.trace_count = ret.trace_info.traces_count;
+          if(ret.trace_info.traces.length === 0){
             this.tableData.push({
-              errorType: ret.trace_info.traces_type[i],
-              errorContent: ret.trace_info.traces[i],
-              errorCount: ret.trace_info.traces_count[i]
+              errorType: '',
+              errorContent: '暂无数据',
+              errorCount: ''
             });
+          }else {
+            for (var i = 0; i < ret.trace_info.traces.length; i++) {
+              this.tableData.push({
+                errorType: ret.trace_info.traces_type[i],
+                errorContent: ret.trace_info.traces[i],
+                errorCount: ret.trace_info.traces_count[i]
+              });
+            }
           }
           // _this.trace_count = ret.trace_info.trace_count;
           // _this.traces = ret.trace_info.traces;

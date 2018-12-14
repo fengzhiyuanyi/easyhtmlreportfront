@@ -1,5 +1,5 @@
 <template>
-  <el-row>
+  <el-row style="margin-bottom: 40px;">
     <el-col :span="3">
       <el-table
         :data="eventPoint.filter(data => !search || data.text.toLowerCase().includes(search.toLowerCase()))"
@@ -36,7 +36,6 @@
   import 'swiper/dist/css/swiper.css'
   import { swiper, swiperSlide } from 'vue-awesome-swiper'
   import $ from "jquery";
-  import gallery from "../../assets/jquery.gallery.js";
 
   export default {
     components: {
