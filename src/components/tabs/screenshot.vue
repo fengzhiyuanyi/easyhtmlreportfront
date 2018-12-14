@@ -1,6 +1,7 @@
 <template>
   <div class="Screenshot_box">
-    <div class="row">
+    <div class="row" style="min-height: 400px;">
+      <div id="no-screenshot" v-if="hiddenPager">暂无截图数据!</div>
       <div class="col-md-4" v-for="(v, index) in nova" :key="index">
         <div id="pic">
           <img class="img-thumbnail" :src="v.screenshot">
@@ -9,7 +10,7 @@
         </div>
       </div>
     </div>
-    <div class="jqPager" :class="{hiddenPager:hiddenPager}">
+    <div class="jqPager" v-if="hiddenPager === false">
       <ul id="jqPage" class="pagination"></ul>
       <div class="jumpBox">
         <input type="number" class="jumppage" id="jumpPageIndex">
@@ -165,6 +166,11 @@ export default {
   margin-bottom: 0px;
 }
 
+#no-screenshot{
+  margin: auto;
+  font-size: large;
+}
+
 #fwindow1 {
   z-index: 999;
   position: fixed;
@@ -179,10 +185,6 @@ export default {
 
 img {
   max-height: 400px;
-}
-
-.hiddenPager {
-  visibility: hidden;
 }
 
 .jqPager {
