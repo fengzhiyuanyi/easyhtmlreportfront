@@ -1,7 +1,7 @@
 <template>
   <div>
-    <headpage></headpage>
-    <summarypage></summarypage>
+    <headPage></headPage>
+    <summaryPage></summaryPage>
     <div class="wrapper_main">
       <div class="Application_cont">
         <div class="Application_menu">
@@ -36,9 +36,8 @@
 </template>
 
 <script>
-  import headpage from "./Header";
-  import summarypage from "./Summary";
-  import $ from "jquery";
+  import headPage from "./Header";
+  import summaryPage from "./Summary";
   import videojs from "video.js";
   import "videojs-contrib-hls";
   export default {
@@ -62,8 +61,8 @@
       };
     },
     components: {
-      headpage,
-      summarypage
+      headPage,
+      summaryPage
     },
     methods: {
       linkto(e) {

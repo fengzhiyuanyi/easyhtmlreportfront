@@ -5,9 +5,11 @@
         <div class="head_title">
           <b>应用信息</b>
         </div>
-        <div class="pull-right div-btn">
-          <el-button type="primary" icon="el-icon-document" @click="getPdf()">生成PDF</el-button>
-          <a style="margin-left: 10px" href="log.txt">
+        <div class="pull-right div-btn" v-if="isReport()">
+          <router-link to="/report">
+            <el-button type="primary" icon="el-icon-document">生成PDF</el-button>
+          </router-link>
+          <a style="margin-left: 10px" href="log.txt" :download="info.basic_info.app_info.label + '_log.txt'">
             <el-button type="primary" icon="el-icon-download">游戏log</el-button>
           </a>
         </div>
@@ -50,7 +52,7 @@
           </li>
           <li>
             <b>设备版本:</b>
-            <span>{{info.basic_info.device_info.version === unidefined? '未知':'Android '+ info.basic_info.device_info.version}}</span>
+            <span>{{info.basic_info.device_info.version === '' ? '未知':'Android '+ info.basic_info.device_info.version}}</span>
             <!-- Android 7.0 -->
           </li>
         </ul>
@@ -111,10 +113,10 @@ export default {
     };
   },
   mounted() {
-    let _this = this;
+    // let _this = this;
     $.getJSON("info.json").then(ret => {
-			_this.info = ret;
-			_this.info.basic_info.app_info.size = this.getFileSize(_this.info.basic_info.app_info.size);
+			this.info = ret;
+			this.info.basic_info.app_info.size = this.getFileSize(this.info.basic_info.app_info.size);
     });
   },
   methods: {
@@ -132,6 +134,13 @@ export default {
         fileSizeMsg = (fileSizeByte / (1024 * 1024 * 1024)).toFixed(2) + " GB";
       else fileSizeMsg = "文件超过1TB";
       return fileSizeMsg;
+    },
+    isReport(){
+      if(this.$route.name === 'Pdf'){
+        return false;
+      }else {
+        return true;
+      }
     }
   }
 };

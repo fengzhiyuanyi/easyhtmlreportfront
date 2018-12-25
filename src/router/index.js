@@ -5,6 +5,7 @@ import Trace from '@/components/tabs/Trace'
 import screenshot from '@/components/tabs/screenshot'
 import Progress from '@/components/tabs/Progress'
 import Report from '@/components/Report'
+import Pdf from '@/components/Pdf'
 
 Vue.use(Router)
 
@@ -40,6 +41,11 @@ export default new Router({
           component: Progress
         }
       ]
+    },
+    {
+      path: '/report',
+      name: 'Pdf',
+      component: Pdf
     }
   ]
 })

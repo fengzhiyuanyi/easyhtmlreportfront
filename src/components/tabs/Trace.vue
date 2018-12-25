@@ -14,20 +14,30 @@
       :data="tableData"
       stripe
       border
+      size="small"
+      @row-click="gotoProcess"
       style="width: 90%;margin: auto"
-      :default-sort="{prop: 'date', order: 'descending'}"
-    >
+      :default-sort="{prop: 'date', order: 'descending'}">
       <el-table-column
+        align="center"
         prop="errorType"
-        label="TraceType"
+        label="ErrorType"
+        sortable
+        width="180">
+      </el-table-column>
+      <el-table-column
+        prop="errorTime"
+        align="center"
+        label="ErrorTime"
         sortable
         width="180">
       </el-table-column>
       <el-table-column
         prop="errorContent"
-        label="TraceInfo">
+        label="ErrorInfo">
       </el-table-column>
       <el-table-column
+        align="center"
         prop="errorCount"
         label="Count"
         sortable
@@ -45,8 +55,6 @@
     data() {
       return {
         trace_count: 0,
-        // traces: [],
-        // traces_count: [],
         tableData: []
       };
     },
@@ -55,25 +63,32 @@
         // let _this = this;
         $.getJSON("info.json").then(ret => {
           this.trace_count = ret.trace_info.trace_count;
-          if(ret.trace_info.traces.length === 0){
+          if (ret.trace_info.traces.length === 0) {
             this.tableData.push({
               errorType: '',
+              errorTime: '',
               errorContent: '暂无数据',
               errorCount: ''
             });
-          }else {
+          } else {
             for (var i = 0; i < ret.trace_info.traces.length; i++) {
               this.tableData.push({
                 errorType: ret.trace_info.traces_type[i],
+                errorTime: ret.trace_info.traces_time[i],
                 errorContent: ret.trace_info.traces[i],
                 errorCount: ret.trace_info.traces_count[i]
               });
             }
           }
-          // _this.trace_count = ret.trace_info.trace_count;
-          // _this.traces = ret.trace_info.traces;
-          // _this.traces_count = ret.trace_info.traces_count;
         });
+      },
+      gotoProcess(row) {
+        this.$router.push({
+          name: 'Progress',
+          params: {
+            time: row.errorTime
+          }
+        })
       }
     },
     mounted() {
@@ -86,5 +101,14 @@
     width: 90%;
     margin: auto auto 20px;
     font-size: medium;
+  }
+
+  .el-table .cell {
+    white-space: pre !important;
+  }
+
+  .cell {
+    max-height: 200px !important;
+    overflow: auto !important;
   }
 </style>

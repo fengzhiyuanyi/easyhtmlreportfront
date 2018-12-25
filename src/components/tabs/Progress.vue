@@ -1,35 +1,38 @@
 <template>
-  <el-row style="margin-bottom: 40px;">
-    <el-col :span="3">
-      <el-table
-        :data="eventPoint.filter(data => !search || data.text.toLowerCase().includes(search.toLowerCase()))"
-        style="width: 100%"
-        max-height="360"
-        @row-click="picTo">
-        <el-table-column
-          prop="text">
-          <template slot="header" slot-scope="scope">
-            <el-input
-              v-model="search"
-              size="mini"
-              placeholder="请输入事件点关键字搜索"/>
-          </template>
-        </el-table-column>
-      </el-table>
-    </el-col>
-    <el-col :span="21">
-      <el-card style="height:360px">
-        <swiper :options="swiperOption" ref="mySwiper">
-          <div class="swiper-button-prev" slot="button-prev"></div>
-          <div class="swiper-button-next" slot="button-next"></div>
-          <div class="swiper-scrollbar"   slot="scrollbar"></div>
-        </swiper>
-        <div style="text-align: center;padding-top: 9px">
-          <span style="font-size: 15px">{{activePic}}</span>
+  <div class="Progress_box">
+    <el-row>
+      <el-col :span="3">
+        <el-table
+          :data="eventPoint.filter(data => !search || data.text.toLowerCase().includes(search.toLowerCase()))"
+          style="width: 100%"
+          max-height="360"
+          @row-click="picTo">
+          <el-table-column
+            prop="text">
+            <template slot="header" slot-scope="scope">
+              <el-input
+                v-model="search"
+                @keyup.enter.native="searchEvent"
+                size="mini"
+                placeholder="请输入关键字进行搜索"/>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-col>
+      <el-col :span="21">
+        <div style="height:360px">
+          <swiper :options="swiperOption" ref="mySwiper">
+            <div class="swiper-button-prev" slot="button-prev"></div>
+            <div class="swiper-button-next" slot="button-next"></div>
+            <div class="swiper-scrollbar"   slot="scrollbar"></div>
+          </swiper>
+          <div style="text-align: center;padding-top: 20px">
+            <span style="font-size: 15px; font-weight: bold" >{{activePic}}</span>
+          </div>
         </div>
-      </el-card>
-    </el-col>
-  </el-row>
+      </el-col>
+    </el-row>
+  </div>
 </template>
 
 <script>
@@ -64,6 +67,7 @@
           centeredSlides:true,
           keyboard: true,
           effect: 'coverflow',
+          errorTime: '',
           coverflowEffect: {
             rotate: 5,
             stretch: 8,
@@ -73,8 +77,7 @@
           },
           scrollbar: {
             el: '.swiper-scrollbar',
-            draggable: true,
-            hide: true
+            draggable: true
           },
           navigation: {
             nextEl: '.swiper-button-next',
@@ -82,8 +85,8 @@
           },
           on: {
             transitionEnd: () => {
-              if(this.eventPic.indexOf(this.swiper.activeIndex)==-1) {
-                this.activePic = "第" + (this.swiper.activeIndex+1) + "张图片";
+              if (this.eventPic.indexOf(this.swiper.activeIndex) === -1) {
+                this.activePic = "第 " + (this.swiper.activeIndex+1) + " 张图片  " + this.swiperData[this.swiper.activeIndex].time;
               }else {
                 this.activePic=this.eventPoint[this.eventPic.indexOf(this.swiper.activeIndex)].text;
               }
@@ -103,18 +106,21 @@
         async: false,
         success: (response) => {
           this.swiperData = response.steps;
-          this.picCount = this.swiperData.length
+          this.picCount = this.swiperData ? this.swiperData.length : 0;
         }
       });
       const slides = [];
       const event=[];
-      for (let i = 0; i < this.swiperData.length; i += 1) {
+      for (let i = 0; i < this.picCount; i += 1) {
         const srcs = this.swiperData[i].screenshot;
         const arr=this.swiperData[i].code.split("\n")
-        if(arr[1].indexOf("##")!=-1){
-          event.push({text:arr[1].split("##")[1],value:(i+1)})
-          this.eventPic.push(i)
+        if(arr[1].indexOf("##")!==-1){
+          event.push({text: arr[1].split("##")[1], value: (i+1), time: this.swiperData[i].time})
+        }else {
+          var content = {text: "第 " + (i + 1) + " 张图片  " + this.swiperData[i].time, value: (i+1), time: this.swiperData[i].time};
+          event.push(content)
         }
+        // this.eventPoint.push(i)
         slides.push("<img src=" +  srcs + " height='300px'"+"/>")
       }
       this.eventPoint = event;
@@ -123,11 +129,37 @@
     mounted() {
       this.swiper.init();
       mousewheel: true;
+      if (this.$route.params.time !== ''){
+        this.search = this.$route.params.time;
+        this.errorLocation();
+      }
     },
     methods: {
-      picTo (row, event, column) {
+      picTo (row) {
         this.swiper.slideTo(parseInt(row.value)-1, 1000, false);
       },
+      searchEvent (){
+        for(let index in this.eventPoint){
+          if (this.eventPoint[index].text.indexOf(this.search) > -1){
+            this.swiper.slideTo(index, 1000, false);
+            break;
+          }
+        }
+      },
+      errorLocation (){
+        var searchs = this.search.split(":")
+        var timecell = -1;
+        for(let index in this.eventPoint){
+          var timearr = this.eventPoint[index].time.split(":")
+          var tmp = Math.abs((searchs[0] - timearr[0]) * 3600 + (searchs[1] - timearr[1]) * 60 + searchs[2] - timearr[2]);
+          if (timecell === -1 || tmp <= timecell){
+            timecell = tmp;
+          }else {
+            this.swiper.slideTo(index - 1, 1000, false);
+            break;
+          }
+        }
+      }
     }
   }
 </script>
@@ -153,5 +185,14 @@
     margin-left: auto;
     margin-right: auto;
   }
+
+  .swiper-container-horizontal>.swiper-scrollbar {
+    position: relative;
+  }
+
+  .swiper-scrollbar{
+    margin-top: 30px;
+  }
+
 </style>
 
