@@ -1303,29 +1303,25 @@ a:visited {
 }
 
 .Progress_box {
-  height: 600px;
+  height: 580px;
   background: #fff;
   border: 1px solid #e7e9ea;
-  margin: 0 auto;
-  margin-top: 20px;
-  padding: 20px;
+  margin: 20px auto 0;
+  padding: 30px;
 }
 
 .Screenshot_box {
   background: #fff;
   border: 1px solid #e7e9ea;
-  margin: 0 auto;
-  margin-top: 20px;
-  padding: 20px;
-  padding-bottom: 60px;
+  margin: 20px auto 0;
+  padding: 20px 20px 60px;
 }
 
 .Trace_box {
-  height: 600px;
+  min-height: 600px;
   background: #fff;
   border: 1px solid #e7e9ea;
-  margin: 0 auto;
-  margin-top: 20px;
+  margin: 20px auto 0;
   padding: 20px;
 }
 

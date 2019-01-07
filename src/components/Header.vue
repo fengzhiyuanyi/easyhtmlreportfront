@@ -33,9 +33,6 @@
       </div>
     </div>
   </header>
-
-
-
 </template>
 
 <script>

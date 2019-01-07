@@ -1,131 +1,198 @@
 <template>
   <div class="Progress_box">
-    <section id="dg-container" class="dg-container">
-      <div class="dg-wrapper">
-        <a href="#" v-for="(slide, index) in virtualData.slides" :key="index">
-          <img class="img-size" :src="slide">
-          <div style="font-weight:bold">{{index}}</div>
-        </a>
-      </div>
-      <nav>
-        <span class="dg-prev">&lt;</span>
-        <span class="dg-next">&gt;</span>
-      </nav>
-    </section>
+    <el-row>
+      <el-col :span="3">
+        <el-table
+          :data="eventPoint.filter(data => !search || data.text.toLowerCase().includes(search.toLowerCase()))"
+          style="width: 100%"
+          max-height="360"
+          @row-click="picTo">
+          <el-table-column
+            prop="text">
+            <template slot="header" slot-scope="scope">
+              <el-input
+                v-model="search"
+                @keyup.enter.native="searchEvent"
+                size="mini"
+                placeholder="请输入关键字进行搜索"/>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-col>
+      <el-col :span="21">
+        <div style="height:360px">
+          <swiper :options="swiperOption" ref="mySwiper">
+            <div class="swiper-button-prev" slot="button-prev"></div>
+            <div class="swiper-button-next" slot="button-next"></div>
+            <div class="swiper-scrollbar"   slot="scrollbar"></div>
+          </swiper>
+          <div style="text-align: center;padding-top: 20px">
+            <span style="font-size: 15px; font-weight: bold" >{{activePic}}</span>
+          </div>
+        </div>
+      </el-col>
+    </el-row>
   </div>
 </template>
-<script>
-import $ from "jquery";
-import gallery from "../../assets/jquery.gallery.js";
-export default {
-  data() {
-    return {
-      virtualData: {
-        slides: [
-        ]
-      }
-    };
-  },
-  methods: {
-    getTrace() {
-      let _this = this;
-      $.getJSON("./info.json").then(ret => {
-        _this.trace_list = ret.trace_info.trace_list;
-      });
-    }
-  },
-  mounted() {
-    this.getTrace();
-    $(function() {
-      $("#dg-container").gallery();
-    });
-  }
-};
-</script>
-<style>
-.dg-container {
-  width: 100%;
-  height: 450px;
-  position: relative;
-}
-.dg-wrapper {
-  width: 481px;
-  height: 316px;
-  margin: 0 auto;
-  margin-top: 75px;
-  position: relative;
-  -webkit-transform-style: preserve-3d;
-  -moz-transform-style: preserve-3d;
-  -o-transform-style: preserve-3d;
-  -ms-transform-style: preserve-3d;
-  transform-style: preserve-3d;
-  -webkit-perspective: 1000px;
-  -moz-perspective: 1000px;
-  -o-perspective: 1000px;
-  -ms-perspective: 1000px;
-  perspective: 1000px;
-}
-.dg-wrapper a {
-  width: 482px;
-  height: 316px;
-  display: block;
-  position: absolute;
-  left: 0;
-  top: 0;
-  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.3);
-}
 
-.img-size {
-  width: 100%;
-  height: 100%;
-}
-.dg-wrapper a.dg-transition {
-  -webkit-transition: all 0.5s ease-in-out;
-  -moz-transition: all 0.5s ease-in-out;
-  -o-transition: all 0.5s ease-in-out;
-  -ms-transition: all 0.5s ease-in-out;
-  transition: all 0.5s ease-in-out;
-}
-.dg-wrapper a img {
-  display: block;
-  padding: 0px 0px 0px 1px;
-}
-.dg-wrapper a div {
-  text-align: center;
-  line-height: 50px;
-  text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5);
-  color: #333;
-  font-size: 16px;
-  width: 100%;
-  bottom: -55px;
-  display: none;
-  position: absolute;
-}
-.dg-wrapper a.dg-center div {
-  display: block;
-}
-.dg-container nav {
-  width: 58px;
-  position: absolute;
-  z-index: 1000;
-  bottom: 40px;
-  left: 50%;
-  margin-left: -29px;
-}
-.dg-container nav span {
-  text-indent: -9000px;
-  float: left;
-  cursor: pointer;
-  width: 24px;
-  height: 25px;
-  opacity: 0.8;
-  background: transparent url(./images/arrows.png) no-repeat top left;
-}
-.dg-container nav span:hover {
-  opacity: 1;
-}
-.dg-container nav span.dg-next {
-  background-position: top right;
-  margin-left: 10px;
-}
+<script>
+  import 'swiper/dist/css/swiper.css'
+  import { swiper, swiperSlide } from 'vue-awesome-swiper'
+  import $ from "jquery";
+
+  export default {
+    components: {
+      swiper,
+      swiperSlide
+    },
+    props: {
+    },
+    data () {
+      return {
+        swiperData: [],
+        activePic: "",
+        picNum: 0,
+        picCount: 0,
+        eventPoint: [],
+        search:'',
+        eventPic:[],
+        swiperOption: {
+          init: false,
+          virtual: {
+            slides: [],
+          },
+          mousewheel:true,
+          initialSlide: 1,
+          slidesPerView: 3,
+          centeredSlides:true,
+          keyboard: true,
+          effect: 'coverflow',
+          errorTime: '',
+          coverflowEffect: {
+            rotate: 5,
+            stretch: 8,
+            depth: 100,
+            modifier: 5,
+            slideShadows: true
+          },
+          scrollbar: {
+            el: '.swiper-scrollbar',
+            draggable: true
+          },
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev'
+          },
+          on: {
+            transitionEnd: () => {
+              if (this.eventPic.indexOf(this.swiper.activeIndex) === -1) {
+                this.activePic = "第 " + (this.swiper.activeIndex+1) + " 张图片  " + this.swiperData[this.swiper.activeIndex].time;
+              }else {
+                this.activePic=this.eventPoint[this.eventPic.indexOf(this.swiper.activeIndex)].text;
+              }
+            },
+          },
+        },
+      }
+    },
+    computed: {
+      swiper() {
+        return this.$refs.mySwiper.swiper
+      }
+    },
+    created(){
+      $.ajax({
+        url: 'record.json',
+        async: false,
+        success: (response) => {
+          this.swiperData = response.steps;
+          this.picCount = this.swiperData ? this.swiperData.length : 0;
+        }
+      });
+      const slides = [];
+      const event=[];
+      for (let i = 0; i < this.picCount; i += 1) {
+        const srcs = this.swiperData[i].screenshot;
+        const arr=this.swiperData[i].code.split("\n")
+        if(arr[1].indexOf("##")!==-1){
+          event.push({text: arr[1].split("##")[1], value: (i+1), time: this.swiperData[i].time})
+        }else {
+          var content = {text: "第 " + (i + 1) + " 张图片  " + this.swiperData[i].time, value: (i+1), time: this.swiperData[i].time};
+          event.push(content)
+        }
+        // this.eventPoint.push(i)
+        slides.push("<img src=" +  srcs + " height='300px'"+"/>")
+      }
+      this.eventPoint = event;
+      this.swiperOption.virtual.slides = slides;
+    },
+    mounted() {
+      this.swiper.init();
+      mousewheel: true;
+      if (this.$route.params.time !== ''){
+        this.search = this.$route.params.time;
+        this.errorLocation();
+      }
+    },
+    methods: {
+      picTo (row) {
+        this.swiper.slideTo(parseInt(row.value)-1, 1000, false);
+      },
+      searchEvent (){
+        for(let index in this.eventPoint){
+          if (this.eventPoint[index].text.indexOf(this.search) > -1){
+            this.swiper.slideTo(index, 1000, false);
+            break;
+          }
+        }
+      },
+      errorLocation (){
+        var searchs = this.search.split(":")
+        var timecell = -1;
+        for(let index in this.eventPoint){
+          var timearr = this.eventPoint[index].time.split(":")
+          var tmp = Math.abs((searchs[0] - timearr[0]) * 3600 + (searchs[1] - timearr[1]) * 60 + searchs[2] - timearr[2]);
+          if (timecell === -1 || tmp <= timecell){
+            timecell = tmp;
+          }else {
+            this.swiper.slideTo(index - 1, 1000, false);
+            break;
+          }
+        }
+      }
+    }
+  }
+</script>
+
+<style scoped>
+  .anchor{
+    height: 600px;
+    background-color: #EEEEEE;
+  }
+  .anchor-li{
+    background-color: #EEEEEE;
+    border: 0;
+    color: #424242;
+    font-size: 18px;
+  }
+  .goPic{
+    margin-top: 30px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .center-block {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .swiper-container-horizontal>.swiper-scrollbar {
+    position: relative;
+  }
+
+  .swiper-scrollbar{
+    margin-top: 30px;
+  }
+
 </style>
+
