@@ -21,6 +21,7 @@
       tracePage
     },
     mounted: function() {
+      settT
       this.getPdf()
     }
   }

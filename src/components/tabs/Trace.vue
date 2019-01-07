@@ -61,7 +61,7 @@
     methods: {
       getTrace() {
         // let _this = this;
-        $.getJSON("info.json").then(ret => {
+        $.getJSON("../../static/info.json").then(ret => {
           this.trace_count = ret.trace_info.trace_count;
           if (ret.trace_info.traces.length === 0) {
             this.tableData.push({
