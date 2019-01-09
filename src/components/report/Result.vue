@@ -1,143 +1,147 @@
 <template>
   <div>
     <div class="Overview_box">
-      <div class="row">
-        <div class="col-sm-6">
-          <div class="row result">
-            <div class="col-sm-4">
-              <p>测试结果</p>
-            </div>
-          </div>
-          <div class="row rowtext">
-            <div class="col-sm-4">
+      <el-row>
+        <el-col :span="20">
+          <el-row class="result">
+            <el-col :span="8">
+               <p>测试结果</p>
+            </el-col>
+          </el-row>
+          <el-row class="rowtext" style="text-align: center">
+            <el-col :span="8">
               <p>覆盖台数：{{result.count.total}}台</p>
-            </div>
-            <div class="col-sm-4">
+            </el-col>
+            <el-col :span="8">
               <p>市场覆盖率：未知</p>
-            </div>
-            <div class="col-sm-4">
+            </el-col>
+            <el-col :span="8">
               <p>覆盖用户数量：未知</p>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-sm-4">
+            </el-col>
+          </el-row>
+          <el-row style="text-align: center">
+            <el-col :span="8">
               <p>通过台数：{{result.count.success}}台</p>
-            </div>
-            <div class="col-sm-4">
+            </el-col>
+            <el-col :span="8">
               <p>失败台数：{{result.count.fail}}台</p>
-            </div>
-            <div class="col-sm-4">
+            </el-col>
+            <el-col :span="8">
               <p>影响用户数量：未知</p>
-            </div>
-          </div>
-        </div>
-        <div class="col-sm-6">
-          <div id="pie" style="height: 500px;"></div>
-        </div>
-      </div>
+            </el-col>
+          </el-row>
+        </el-col>
+      </el-row>
     </div>
-    <div class="Details_box">
-      <div class="row rowhead rowcell">
-        <div class="col-sm-8 rowtitle">
-          <div class="row">
-            <div class="col-sm-3">
-              <p>设备</p>
-            </div>
-            <div class="col-sm-3">
-              <p>运行结果</p>
-            </div>
-            <div class="col-sm-3">
-              <p>运行时长</p>
-            </div>
-            <div class="col-sm-3">
-              <p>测试报告</p>
-            </div>
-          </div>
-        </div>
-        <div class="col-sm-4">
-          <p>异常信息</p>
-        </div>
 
-      </div>
-      <div class="row rowcell" v-for="task in task_list">
-        <div class="col-sm-8 rowtitle">
-          <div class="row">
-            <div class="col-sm-3">
+    <div class="Details_box">
+      <el-row class="rowhead rowcell">
+        <!--<el-col :span="20" class="rowtitle">-->
+        <el-col :span="20">
+          <el-row>
+            <el-col :span="6">
+              <p>设备</p>
+            </el-col>
+            <el-col :span="6">
+              <p>运行结果</p>
+            </el-col>
+            <el-col :span="6">
+              <p>运行时长</p>
+            </el-col>
+            <el-col :span="6">
+              <p>测试报告</p>
+            </el-col>
+          </el-row>
+        </el-col>
+        <el-col :span="4">
+          <p>异常信息</p>
+        </el-col>
+      </el-row>
+      <!--<el-row class="rowcell" v-for="task in task_list">-->
+      <el-row v-for="task in task_list">
+        <el-col :span="20">
+          <el-row>
+            <el-col :span="6">
               <p>{{task.device.brand + ": " + task.device.model}}</p>
-            </div>
-            <div class="col-sm-3">
+            </el-col>
+            <el-col :span="6">
               <p>{{task.result}}</p>
-            </div>
-            <div class="col-sm-3">
+            </el-col>
+            <el-col :span="6">
               <p>{{task.duration}}</p>
-            </div>
-            <div class="col-sm-3">
+            </el-col>
+            <el-col :span="6">
               <a target="_blank" v-if="task.jenkinsEnvironment"
-                 :href='task.jenkinsEnvironment.BUILD_URL + "HTML_Report"'>
-                <i class="fa fa-bar-chart"></i>
-              </a>
-            </div>
-          </div>
-        </div>
-        <div class="col-sm-4">
+                     :href='task.jenkinsEnvironment.BUILD_URL + "HTML_Report"'>
+                    <i class="fa fa-bar-chart"></i>
+                  </a>
+            </el-col>
+          </el-row>
+        </el-col>
+        <el-col :span="4">
           <p>{{task.exception || "无"}}</p>
-        </div>
-      </div>
-      <div id="stage" class="row text-center">
-        <table class="table-bordered col-sm-12">
-          <thead>
-          <tr>
-            <th v-for="stage in task_list[0].stages">{{stage.name}}</th>
-            <th>详细日志</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr v-for="task in task_list">
-            <td v-for="stage in task.stages">
-              <p
-                :class="[stage.status==='SUCCESS'? 'success': '', stage.status==='IN_PROGRESS'? 'inprogress': '',stage.status==='FAILURE'? 'failure': '']">
-                {{stage.status + "-" + stage.duration}}</p>
-            </td>
-            <td>
-              <a target="_blank" v-if="task.jenkinsEnvironment" :href='task.log_link'>
+        </el-col>
+      </el-row>
+      <el-row id="stage">
+        <el-table
+          :cell-style="cellStyle"
+          :data="tableData"
+          stripe
+          style="width: 100%">
+          <el-table-column
+            v-for="stage in stages"
+            :label="stage.name">
+            <template slot-scope="scope">
+              <p v-if="scope.row[stage.prop].status==='FAILURE'">FAILURE</p>
+              <p v-else>{{scope.row[stage.prop].duration}}</p>
+             <!--<p-->
+             <!--:class="[scope.row[stage.prop].status==='IN_PROGRESS'? 'inprogress': '',scope.row[stage.prop].status==='FAILURE'? 'failure': '']">-->
+               <!--{{scope.row[stage.prop].duration}}-->
+             <!--</p>-->
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="详细日志">
+            <template slot-scope="scope">
+             <a target="_blank" v-if="scope.row.jenkinsEnvironment" :href='scope.row.log_link'>
                 <i class="fa fa-bar-chart"></i>
               </a>
-            </td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-row>
     </div>
+
     <div class="Comparison_box">
-      <div class="row">
-        <div class="col-md-6 col-sm-12 col-lg-6 graph">
+      <el-row class="rowtitle">
+        <el-col :span="12">
           <div id="installApk" style="height:450px"></div>
-        </div>
-        <div class="col-md-6 col-sm-12 col-lg-6 graph">
+        </el-col>
+        <el-col :span="12">
           <div id="pss" style="height:450px"></div>
-        </div>
-        <div class="col-md-6 col-sm-12 col-lg-6 graph">
+        </el-col>
+        <el-col :span="12">
           <div id="fps" style="height:450px"></div>
-        </div>
-        <div class="col-md-6 col-sm-12 col-lg-6 graph">
+        </el-col>
+        <el-col :span="12">
           <div id="cpu" style="height:450px"></div>
-        </div>
-        <div class="col-md-6 col-sm-12 col-lg-6 graph">
+        </el-col>
+        <el-col :span="12">
           <div id="systemCpu" style="height:450px"></div>
-        </div>
-        <div class="col-md-6 col-sm-12 col-lg-6 graph">
+        </el-col>
+        <el-col :span="12">
           <div id="rxBytes" style="height:450px"></div>
-        </div>
-        <div class="col-md-6 col-sm-12 col-lg-6 graph">
+        </el-col>
+        <el-col :span="12">
           <div id="txBytes" style="height:450px"></div>
-        </div>
-        <div class="col-md-6 col-sm-12 col-lg-6 graph">
+        </el-col>
+        <el-col :span="12">
           <div id="rxTcpBytes" style="height:450px"></div>
-        </div>
-        <div class="col-md-6 col-sm-12 col-lg-6 graph">
+        </el-col>
+        <el-col :span="12">
           <div id="txTcpBytes" style="height:450px"></div>
-        </div>
-      </div>
+        </el-col>
+      </el-row>
       <aside>
         <a href="#pss">安装时间</a>
         <a href="#pss">内存</a>
@@ -149,7 +153,6 @@
         <a href="#rxTcpBytes">上行tcp流量</a>
         <a href="#txTcpBytes">下行tcp流量</a>
       </aside>
-
     </div>
   </div>
 </template>
@@ -161,6 +164,32 @@ import $ from 'jquery'
 export default {
   data () {
     return {
+      stages: [
+        {
+          prop: 'Checkout',
+          name: '检查'
+        },
+        {
+          prop: 'setUp',
+          name: '准备'
+        },
+        {
+          prop: 'Install APK',
+          name: '安装'
+        },
+        {
+          prop: 'Monkey-Test',
+          name: '自动化测试'
+        },
+        // {
+        //   prop: 'handle_exception',
+        //   name: '处理异常'
+        // },
+        {
+          prop: 'tearDown',
+          name: '卸载'
+        }
+      ],
       result: {
         count: {
           total: '',
@@ -173,46 +202,89 @@ export default {
           perf: {
             exit: false,
             data: {
-              cpu: '1',
-              pss: '1',
-              systemCpu: '1',
-              rxBytes: '1',
-              txBytes: '1',
-              rxTcpBytes: '1',
-              txTcpBytes: '1',
-              fps: '1'
+              cpu: '',
+              pss: '',
+              systemCpu: '',
+              rxBytes: '',
+              txBytes: '',
+              rxTcpBytes: '',
+              txTcpBytes: '',
+              fps: ''
             }
           },
           log_link: '',
           exception: '',
           device: {
-            brand: '',
-            model: ''
+            brand: '努比亚z17',
+            model: 'test'
           },
-          result: '',
-          duration: '',
+          result: 'success',
+          duration: '01:03:03',
           jenkinsEnvironment: {
             BUILD_URL: ''
           },
           stages: [
             {
-              name: '',
-              status: '',
-              duration: ''
+              name: 'Checkout',
+              status: 'SUCCESS',
+              duration: '00:00:03'
             },
             {
-              name: '',
-              status: '',
-              duration: ''
+              name: 'setUp',
+              status: 'SUCCESS',
+              duration: '00:01:03'
             },
             {
-              name: '',
-              status: '',
-              duration: ''
+              name: 'Install APK',
+              status: 'SUCCESS',
+              duration: '00:02:03'
+            },
+            {
+              name: 'Monkey-Test',
+              status: 'IN_PROGRESS',
+              duration: '01:00:00'
+            },
+            {
+              name: 'handle_exception',
+              status: 'SUCCESS',
+              duration: '01:04:03'
+            },
+            {
+              name: 'tearDown',
+              status: 'FAILURE',
+              duration: '02:00:00'
             }
           ]
         }
       ]
+    }
+  },
+  computed: {
+    // 计算属性的 getter
+    tableData: function () {
+      let _this = this
+      let data = []
+      if (!_this.task_list) {
+        return data
+      }
+      for (var task of _this.task_list) {
+        let colData = {}
+        if (!task.stages) {
+          continue
+        }
+        for (let stage of task.stages) {
+          // colData[stage.name] = stage.status + '-' + stage.duration
+          colData[stage.name] = {
+            'duration': stage.duration,
+            'status': stage.status
+          }
+          // colData['status'] = stage.status
+        }
+        colData['jenkinsEnvironment'] = task.jenkinsEnvironment
+        colData['log_link'] = task.log_link
+        data.push(colData)
+      }
+      return data
     }
   },
   mounted () {
@@ -226,56 +298,7 @@ export default {
       $.get('http://127.0.0.1:7000/suites/1105ce3c-775b-46d0-94a1-39cfcfca0e80').then(ret => {
         _this.result = ret.result
         _this.task_list = ret.task_list
-        _this.drawInfo()
       })
-    },
-    drawInfo: function () {
-      let _this = this
-      // 图表
-      var dom = document.getElementById('pie')
-      var myChart = echarts.init(dom)
-      var option = null
-
-      option = {
-        title: {
-          x: 'center'
-        },
-        tooltip: {
-          trigger: 'item',
-          formatter: '{a} <br/>{b} : {c} ({d}%)'
-        },
-        color: ['#28a745', '#dc3545'],
-        legend: {
-          orient: 'vertical',
-          right: 'right',
-          top: '400',
-          data: ['成功', '失败']
-        },
-        series: [
-          {
-            name: '台数',
-            type: 'pie',
-            radius: '55%',
-            center: ['50%', '30%'],
-            data: [
-              {value: _this.result.count.success, name: '成功'},
-              {value: _this.result.count.fail, name: '失败'}
-              // {value: '2', name: '成功'},
-              // {value: '3', name: '失败'}
-            ],
-            itemStyle: {
-              emphasis: {
-                shadowBlur: 10,
-                shadowOffsetX: 0,
-                shadowColor: 'rgba(0, 0, 0, 0.5)'
-              }
-            }
-          }
-        ]
-      }
-      if (option && typeof option === 'object') {
-        myChart.setOption(option, true)
-      }
     },
     draw: function () {
       var _this = this;
@@ -310,8 +333,10 @@ export default {
           txTcpBytes.push(0);
           fps.push(0);
         }
-        var instime = _this.task_list[i].stages[2].duration.split(':')
-        installApk.push(parseInt(instime[0]) * 3600 + parseInt(instime[1]) * 60 + parseInt(instime[2]));
+        if (_this.task_list[i].stages) {
+          var instime = _this.task_list[i].stages[2].duration.split(':')
+          installApk.push(parseInt(instime[0]) * 3600 + parseInt(instime[1]) * 60 + parseInt(instime[2]));
+        }
       }
       // installApk
       var installApk_Chart = echarts.init(document.getElementById('installApk'));
@@ -320,10 +345,10 @@ export default {
           text: "安装时间"
         },
         animation: false,
-        dataZoom: [{
-          type: "slider",
-          xAxisIndex: [0]
-        }],
+        // dataZoom: [{
+        //   type: "slider",
+        //   xAxisIndex: [0]
+        // }],
         xAxis: {
           type: 'category',
           data: xAisdata,
@@ -353,10 +378,10 @@ export default {
           text: "内存"
         },
         animation: false,
-        dataZoom: [{
-          type: "slider",
-          xAxisIndex: [0]
-        }],
+        // dataZoom: [{
+        //   type: "slider",
+        //   xAxisIndex: [0]
+        // }],
         xAxis: {
           type: 'category',
           data: xAisdata,
@@ -387,10 +412,10 @@ export default {
           text: "Cpu"
         },
         animation: false,
-        dataZoom: [{
-          type: "slider",
-          xAxisIndex: [0]
-        }],
+        // dataZoom: [{
+        //   type: "slider",
+        //   xAxisIndex: [0]
+        // }],
         xAxis: {
           type: 'category',
           data: xAisdata,
@@ -421,10 +446,10 @@ export default {
           text: "systemCpu"
         },
         animation: false,
-        dataZoom: [{
-          type: "slider",
-          xAxisIndex: [0]
-        }],
+        // dataZoom: [{
+        //   type: "slider",
+        //   xAxisIndex: [0]
+        // }],
         xAxis: {
           type: 'category',
           data: xAisdata,
@@ -455,10 +480,10 @@ export default {
           text: "上行流量"
         },
         animation: false,
-        dataZoom: [{
-          type: "slider",
-          xAxisIndex: [0]
-        }],
+        // dataZoom: [{
+        //   type: "slider",
+        //   xAxisIndex: [0]
+        // }],
         xAxis: {
           type: 'category',
           data: xAisdata,
@@ -489,10 +514,10 @@ export default {
           text: "下行流量"
         },
         animation: false,
-        dataZoom: [{
-          type: "slider",
-          xAxisIndex: [0]
-        }],
+        // dataZoom: [{
+        //   type: "slider",
+        //   xAxisIndex: [0]
+        // }],
         xAxis: {
           type: 'category',
           data: xAisdata,
@@ -523,10 +548,10 @@ export default {
           text: "上行tcp流量"
         },
         animation: false,
-        dataZoom: [{
-          type: "slider",
-          xAxisIndex: [0]
-        }],
+        // dataZoom: [{
+        //   type: "slider",
+        //   xAxisIndex: [0]
+        // }],
         xAxis: {
           type: 'category',
           data: xAisdata,
@@ -557,10 +582,10 @@ export default {
           text: "下行tcp流量"
         },
         animation: false,
-        dataZoom: [{
-          type: "slider",
-          xAxisIndex: [0]
-        }],
+        // dataZoom: [{
+        //   type: "slider",
+        //   xAxisIndex: [0]
+        // }],
         xAxis: {
           type: 'category',
           data: xAisdata,
@@ -591,10 +616,10 @@ export default {
           text: "帧率"
         },
         animation: false,
-        dataZoom: [{
-          type: "slider",
-          xAxisIndex: [0]
-        }],
+        // dataZoom: [{
+        //   type: "slider",
+        //   xAxisIndex: [0]
+        // }],
         xAxis: {
           type: 'category',
           data: xAisdata,
@@ -618,6 +643,15 @@ export default {
       }
       fps_Chart.setOption(option, true);
 
+    },
+    cellStyle: function ({row, column, rowIndex, columnIndex}) {
+      if (columnIndex < this.stages.length) {
+        if (row[this.stages[columnIndex].prop].status === 'IN_PROGRESS') {
+          return 'background: #ded885'
+        } else if (row[this.stages[columnIndex].prop].status === 'FAILURE') {
+          return 'background-color: #cf4b52'
+        }
+      }
     }
   }
 }
