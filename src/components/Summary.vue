@@ -9,7 +9,7 @@
           <router-link to="/report">
             <el-button type="primary" icon="el-icon-document">生成PDF</el-button>
           </router-link>
-          <a style="margin-left: 10px" href="log.txt" :download="info.basic_info.app_info.label + '_log.txt'">
+          <a style="margin-left: 10px" href='http://10.240.172.253:7000/report/local_task/local_device/log'>
             <el-button type="primary" icon="el-icon-download">游戏log</el-button>
           </a>
         </div>
@@ -114,7 +114,7 @@ export default {
   },
   mounted() {
     // let _this = this;
-    $.getJSON("info.json").then(ret => {
+    $.get('http://10.240.172.253:7000/report/local_task/local_device/info').then(ret => {
 			this.info = ret;
 			this.info.basic_info.app_info.size = this.getFileSize(this.info.basic_info.app_info.size);
     });

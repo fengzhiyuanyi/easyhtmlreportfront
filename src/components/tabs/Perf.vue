@@ -26,7 +26,7 @@ export default {
     };
   },
   mounted: () => {
-    Papa.parse("./perf.csv", {
+    Papa.parse('http://10.240.172.253:7000/report/local_task/local_device/perf', {
       download: true,
       complete: results => {
         results = results.data;

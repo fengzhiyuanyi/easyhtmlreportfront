@@ -61,7 +61,7 @@
     methods: {
       getTrace() {
         // let _this = this;
-        $.getJSON("../../static/info.json").then(ret => {
+        $.get('http://10.240.172.253:7000/report/local_task/local_device/trace').then(ret => {
           this.trace_count = ret.trace_info.trace_count;
           if (ret.trace_info.traces.length === 0) {
             this.tableData.push({

@@ -295,7 +295,7 @@ export default {
   methods: {
     getData: function () {
       let _this = this
-      $.get('http://127.0.0.1:7000/suites/1105ce3c-775b-46d0-94a1-39cfcfca0e80').then(ret => {
+      $.get('http://10.240.172.253:7000/suites/1105ce3c-775b-46d0-94a1-39cfcfca0e80').then(ret => {
         _this.result = ret.result
         _this.task_list = ret.task_list
       })

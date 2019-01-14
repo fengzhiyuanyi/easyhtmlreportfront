@@ -52,9 +52,9 @@ export default {
     },
     getPics() {
       let _this = this;
-      $.getJSON("record.json").then(ret => {
-        _this.totaldata = ret.steps;
-        _this.totalCount = ret.steps.length;
+      $.get('http://10.240.172.253:7000/report/local_task/local_device/record').then(ret => {
+        _this.totaldata = ret.data.steps;
+        _this.totalCount = ret.data.steps.length;
       });
     },
     initPager: function() {

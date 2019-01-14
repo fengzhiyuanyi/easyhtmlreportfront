@@ -21,7 +21,7 @@
     </div>
     <div id="floatvideo" v-drag>
       <video id="video" class="video-js vjs-big-play-centered vjs-default-skin" preload="true">
-        <source src="video.mp4" type="video/mp4">
+        <source src="" type="video/mp4">
         <p class="vjs-no-js">
           To view this video please enable JavaScript, and consider upgrading to a
           web browser that
@@ -36,96 +36,103 @@
 </template>
 
 <script>
-  import headPage from "./Header";
-  import summaryPage from "./Summary";
-  import videojs from "video.js";
-  import "videojs-contrib-hls";
-  export default {
-    name: "Report",
-    data() {
-      return {
-        tabIndex: 0,
-        flag: false, //鼠标|手指是否按下的标记
-        speed: 1,
-        cur: {
-          //记录鼠标|手指按下时的坐标
-          x: 0,
-          y: 0
-        },
-        nx: 0,
-        ny: 0,
-        dx: 0,
-        dy: 0,
+import headPage from "./Header";
+import summaryPage from "./Summary";
+import videojs from "video.js";
+import "videojs-contrib-hls";
+import $ from "jquery";
+export default {
+  name: "Report",
+  data() {
+    return {
+      // video_url: 'https://arch.s3.netease.com/hzdev-appci/monkeytest/video/local_task/local_device/video.mp4',
+      tabIndex: 0,
+      flag: false, //鼠标|手指是否按下的标记
+      speed: 1,
+      cur: {
+        //记录鼠标|手指按下时的坐标
         x: 0,
         y: 0
-      };
-    },
-    components: {
-      headPage,
-      summaryPage
-    },
-    methods: {
-      linkto(e) {
-        window.location.href = e;
       },
+      nx: 0,
+      ny: 0,
+      dx: 0,
+      dy: 0,
+      x: 0,
+      y: 0
+    };
+  },
+  components: {
+    headPage,
+    summaryPage
+  },
+  methods: {
+    linkto(e) {
+      window.location.href = e;
     },
-    directives: {
-      drag: {
-        inserted: function(el) {
-          var oDiv = el;
-          oDiv.onmousedown = function(ev) {
-            var disX = ev.clientX - oDiv.offsetLeft;
-            var disY = ev.clientY - oDiv.offsetTop;
-            document.onmousemove = function(ev) {
-              var l = ev.clientX - disX;
-              var t = ev.clientY - disY;
-              oDiv.style.left = l + "px";
-              oDiv.style.top = t + "px";
-            };
-            document.onmouseup = function() {
-              document.onmousemove = null;
-              document.onmouseup = null;
-            };
+  },
+  directives: {
+    drag: {
+      inserted: function(el) {
+        var oDiv = el;
+        oDiv.onmousedown = function(ev) {
+          var disX = ev.clientX - oDiv.offsetLeft;
+          var disY = ev.clientY - oDiv.offsetTop;
+          document.onmousemove = function(ev) {
+            var l = ev.clientX - disX;
+            var t = ev.clientY - disY;
+            oDiv.style.left = l + "px";
+            oDiv.style.top = t + "px";
           };
-        }
+          document.onmouseup = function() {
+            document.onmousemove = null;
+            document.onmouseup = null;
+          };
+        };
       }
-    },
-    mounted: function() {
+    }
+  },
+  mounted: function() {
+    $.get('http://10.240.172.253:7000/report/local_task/local_device/video').then(ret => {
       var options = {
-        preload: "auto",
-        width: "482",
-        height: "316",
-        controls: "control",
-        controlBar: {
-          currentTimeDisplay: true,
-          volumePanel: {
-            inline: false
-          },
-          timeDivider: true,
-          durationDisplay: true,
-          remainingTimeDisplay: true,
-          fullscreenToggle: true,
-          PlaybackRateMenuButton: {
-            playbackRates: [0.1, 0.5, 1, 1.5, 2, 5]
-          },
-          children: [
-            { name: "playToggle" },
-            { name: "progressControl" },
-            { name: "currentTimeDisplay" },
-            { name: "timeDivider" },
-            { name: "durationDisplay" },
-            { name: "volumePanel", inline: false },
-            { name: "PlaybackRateMenuButton" },
-            { name: "fullscreenToggle" }
-          ]
+      preload: "auto",
+      width: "482",
+      height: "316",
+      controls: "control",
+      controlBar: {
+        currentTimeDisplay: true,
+        volumePanel: {
+          inline: false
         },
-        autoplay: true
-      };
-      videojs("#video", options, function() {
+        timeDivider: true,
+        durationDisplay: true,
+        remainingTimeDisplay: true,
+        fullscreenToggle: true,
+        PlaybackRateMenuButton: {
+          playbackRates: [0.1, 0.5, 1, 1.5, 2, 5]
+        },
+        children: [
+          { name: "playToggle" },
+          { name: "progressControl" },
+          { name: "currentTimeDisplay" },
+          { name: "timeDivider" },
+          { name: "durationDisplay" },
+          { name: "volumePanel", inline: false },
+          { name: "PlaybackRateMenuButton" },
+          { name: "fullscreenToggle" }
+        ]
+      },
+      autoplay: true
+    };
+      let myPlayer = videojs("#video", options, function() {
         console.log("播放器初始化完成"); //回调函数
       });
-    }
+      // alert(ret.data.video)
+      myPlayer.src(ret.data.video)
+      myPlayer.load()
+    })
   }
+}
 </script>
 
 <style>

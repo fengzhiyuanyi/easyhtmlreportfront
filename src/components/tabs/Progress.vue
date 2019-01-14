@@ -36,132 +36,134 @@
 </template>
 
 <script>
-  import 'swiper/dist/css/swiper.css'
-  import { swiper, swiperSlide } from 'vue-awesome-swiper'
-  import $ from "jquery";
+import 'swiper/dist/css/swiper.css'
+import { swiper, swiperSlide } from 'vue-awesome-swiper'
+import $ from "jquery";
 
-  export default {
-    components: {
-      swiper,
-      swiperSlide
-    },
-    props: {
-    },
-    data () {
-      return {
-        swiperData: [],
-        activePic: "",
-        picNum: 0,
-        picCount: 0,
-        eventPoint: [],
-        search:'',
-        eventPic:[],
-        swiperOption: {
-          init: false,
-          virtual: {
-            slides: [],
-          },
-          mousewheel:true,
-          initialSlide: 1,
-          slidesPerView: 3,
-          centeredSlides:true,
-          keyboard: true,
-          effect: 'coverflow',
-          errorTime: '',
-          coverflowEffect: {
-            rotate: 5,
-            stretch: 8,
-            depth: 100,
-            modifier: 5,
-            slideShadows: true
-          },
-          scrollbar: {
-            el: '.swiper-scrollbar',
-            draggable: true
-          },
-          navigation: {
-            nextEl: '.swiper-button-next',
-            prevEl: '.swiper-button-prev'
-          },
-          on: {
-            transitionEnd: () => {
-              if (this.eventPic.indexOf(this.swiper.activeIndex) === -1) {
-                this.activePic = "第 " + (this.swiper.activeIndex+1) + " 张图片  " + this.swiperData[this.swiper.activeIndex].time;
-              }else {
-                this.activePic=this.eventPoint[this.eventPic.indexOf(this.swiper.activeIndex)].text;
-              }
-            },
+export default {
+  components: {
+    swiper,
+    swiperSlide
+  },
+  props: {
+  },
+  data () {
+    return {
+      swiperData: [],
+      activePic: "",
+      picNum: 0,
+      picCount: 0,
+      eventPoint: [],
+      search:'',
+      eventPic:[],
+      swiperOption: {
+        init: false,
+        virtual: {
+          slides: [],
+        },
+        mousewheel:true,
+        initialSlide: 1,
+        slidesPerView: 3,
+        centeredSlides:true,
+        keyboard: true,
+        effect: 'coverflow',
+        errorTime: '',
+        coverflowEffect: {
+          rotate: 5,
+          stretch: 8,
+          depth: 100,
+          modifier: 5,
+          slideShadows: true
+        },
+        scrollbar: {
+          el: '.swiper-scrollbar',
+          draggable: true
+        },
+        navigation: {
+          nextEl: '.swiper-button-next',
+          prevEl: '.swiper-button-prev'
+        },
+        on: {
+          transitionEnd: () => {
+            if (this.eventPic.indexOf(this.swiper.activeIndex) === -1) {
+              this.activePic = "第 " + (this.swiper.activeIndex+1) + " 张图片  " + this.swiperData[this.swiper.activeIndex].time;
+            }else {
+              this.activePic=this.eventPoint[this.eventPic.indexOf(this.swiper.activeIndex)].text;
+            }
           },
         },
-      }
-    },
-    computed: {
-      swiper() {
-        return this.$refs.mySwiper.swiper
-      }
-    },
-    created(){
-      $.ajax({
-        url: 'record.json',
-        async: false,
-        success: (response) => {
-          this.swiperData = response.steps;
-          this.picCount = this.swiperData ? this.swiperData.length : 0;
-        }
-      });
-      const slides = [];
-      const event=[];
-      for (let i = 0; i < this.picCount; i += 1) {
-        const srcs = this.swiperData[i].screenshot;
-        const arr=this.swiperData[i].code.split("\n")
-        if(arr[1].indexOf("##")!==-1){
-          event.push({text: arr[1].split("##")[1], value: (i+1), time: this.swiperData[i].time})
-        }else {
-          var content = {text: "第 " + (i + 1) + " 张图片  " + this.swiperData[i].time, value: (i+1), time: this.swiperData[i].time};
-          event.push(content)
-        }
-        // this.eventPoint.push(i)
-        slides.push("<img src=" +  srcs + " height='300px'"+"/>")
-      }
-      this.eventPoint = event;
-      this.swiperOption.virtual.slides = slides;
-    },
-    mounted() {
-      this.swiper.init();
-      mousewheel: true;
-      if (this.$route.params.time !== ''){
-        this.search = this.$route.params.time;
-        this.errorLocation();
-      }
-    },
-    methods: {
-      picTo (row) {
-        this.swiper.slideTo(parseInt(row.value)-1, 1000, false);
       },
-      searchEvent (){
-        for(let index in this.eventPoint){
-          if (this.eventPoint[index].text.indexOf(this.search) > -1){
-            this.swiper.slideTo(index, 1000, false);
-            break;
-          }
-        }
-      },
-      errorLocation (){
-        var searchs = this.search.split(":")
-        var timecell = -1;
-        for(let index in this.eventPoint){
-          var timearr = this.eventPoint[index].time.split(":")
-          var tmp = Math.abs((searchs[0] - timearr[0]) * 3600 + (searchs[1] - timearr[1]) * 60 + searchs[2] - timearr[2]);
-          if (timecell === -1 || tmp <= timecell){
-            timecell = tmp;
+    }
+  },
+  computed: {
+    swiper() {
+      return this.$refs.mySwiper.swiper
+    }
+  },
+  created(){
+    $.ajax({
+      url: 'http://10.240.172.253:7000/report/local_task/local_device/record',
+      async: false,
+      success: (response) => {
+        this.swiperData = response.data.steps;
+        this.picCount = this.swiperData ? this.swiperData.length : 0;
+
+        const slides = [];
+        const event=[];
+        for (let i = 0; i < this.picCount; i += 1) {
+          const srcs = this.swiperData[i].screenshot;
+          const arr=this.swiperData[i].code.split("\n")
+          if(arr[1].indexOf("##")!==-1){
+            event.push({text: arr[1].split("##")[1], value: (i+1), time: this.swiperData[i].time})
           }else {
-            this.swiper.slideTo(index - 1, 1000, false);
-            break;
+            var content = {text: "第 " + (i + 1) + " 张图片  " + this.swiperData[i].time, value: (i+1), time: this.swiperData[i].time};
+            event.push(content)
           }
+          // this.eventPoint.push(i)
+          slides.push("<img src=" +  srcs + " height='300px'"+"/>")
+        }
+        this.eventPoint = event;
+        this.swiperOption.virtual.slides = slides;
+      }
+    });
+
+  },
+  mounted() {
+    this.swiper.init();
+    mousewheel: true;
+    if (this.$route.params.time !== ''){
+      this.search = this.$route.params.time;
+      this.errorLocation();
+    }
+  },
+  methods: {
+    picTo (row) {
+      this.swiper.slideTo(parseInt(row.value)-1, 1000, false);
+    },
+    searchEvent (){
+      for(let index in this.eventPoint){
+        if (this.eventPoint[index].text.indexOf(this.search) > -1){
+          this.swiper.slideTo(index, 1000, false);
+          break;
+        }
+      }
+    },
+    errorLocation (){
+      var searchs = this.search.split(":")
+      var timecell = -1;
+      for(let index in this.eventPoint){
+        var timearr = this.eventPoint[index].time.split(":")
+        var tmp = Math.abs((searchs[0] - timearr[0]) * 3600 + (searchs[1] - timearr[1]) * 60 + searchs[2] - timearr[2]);
+        if (timecell === -1 || tmp <= timecell){
+          timecell = tmp;
+        }else {
+          this.swiper.slideTo(index - 1, 1000, false);
+          break;
         }
       }
     }
   }
+}
 </script>
 
 <style scoped>
