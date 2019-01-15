@@ -17,7 +17,7 @@
       <div class="information_box">
         <ul>
           <li>
-            <img src="icon.png" alt="app图标">
+            <img :src="info.basic_info.app_info.icon" alt="app图标">
           </li>
         </ul>
         <ul class="information_box_name">
@@ -91,6 +91,7 @@ export default {
       info: {
         basic_info: {
 					app_info: {
+					  icon: "",
 						size: "0",
 						versionName: "",
 						label: ""
