@@ -7,6 +7,7 @@ import Progress from '@/components/tabs/Progress'
 import Report from '@/components/Report'
 import Pdf from '@/components/Pdf'
 import Index from '@/components/Index'
+import Template from '@/components/Template'
 
 Vue.use(Router)
 
@@ -52,6 +53,11 @@ export default new Router({
       path: '/index',
       name: 'Index',
       component: Index
+    },
+    {
+      path: '/template/:id',
+      name: 'Template',
+      component: Template
     }
   ]
 })
