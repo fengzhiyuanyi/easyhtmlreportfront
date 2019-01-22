@@ -6,10 +6,14 @@
       <div class="Application_cont">
         <div class="Application_menu">
           <ul id="menu_title">
-            <router-link to="/screenshot" tag="li">游戏截图</router-link>
-            <router-link to="/progress" tag="li">测试步骤</router-link>
-            <router-link to="/perf" tag="li">性能数据</router-link>
-            <router-link to="/trace" tag="li">Trace收集</router-link>
+            <!--<router-link to="/screenshot" tag="li">游戏截图</router-link>-->
+            <!--<router-link to="/progress" tag="li">测试步骤</router-link>-->
+            <!--<router-link to="/perf" tag="li">性能数据</router-link>-->
+            <!--<router-link to="/trace" tag="li">Trace收集</router-link>-->
+            <router-link :to="{path:'/screenshot', query:{taskId:this.$route.query.taskId, deviceIp:this.$route.query.deviceIp}}" tag="li">游戏截图</router-link>
+            <router-link :to="{path:'/progress', query:{taskId:this.$route.query.taskId, deviceIp:this.$route.query.deviceIp}}" tag="li">测试步骤</router-link>
+            <router-link :to="{path:'/perf', query:{taskId:this.$route.query.taskId, deviceIp:this.$route.query.deviceIp}}" tag="li">性能数据</router-link>
+            <router-link :to="{path:'/trace', query:{taskId:this.$route.query.taskId, deviceIp:this.$route.query.deviceIp}}" tag="li">Trace收集</router-link>
           </ul>
         </div>
         <div id="con">
@@ -93,7 +97,12 @@ export default {
     }
   },
   mounted: function() {
-    $.get('http://10.240.172.253:7000/report/local_task/local_device/video').then(ret => {
+    let _this = this
+    let taskId = _this.$route.query.taskId
+    let deviceIp = _this.$route.query.deviceIp
+    let url = 'http://10.240.172.253:7000/report/' + taskId + '/' + deviceIp.replace(/\./g, '_') + '/video'
+    // url = 'http://10.240.172.253:7000/report/local_task/local_device/video'
+    $.get(url).then(ret => {
       var options = {
       preload: "auto",
       width: "482",

@@ -49,52 +49,56 @@
 
 </template>
 <script>
-  import $ from "jquery";
+import $ from "jquery";
 
-  export default {
-    data() {
-      return {
-        trace_count: 0,
-        tableData: []
-      };
-    },
-    methods: {
-      getTrace() {
-        // let _this = this;
-        $.get('http://10.240.172.253:7000/report/local_task/local_device/trace').then(ret => {
-          this.trace_count = ret.trace_info.trace_count;
-          if (ret.trace_info.traces.length === 0) {
+export default {
+  data() {
+    return {
+      trace_count: 0,
+      tableData: []
+    };
+  },
+  methods: {
+    getTrace() {
+      let _this = this
+      let taskId = _this.$route.query.taskId
+      let deviceIp = _this.$route.query.deviceIp
+      let url = 'http://10.240.172.253:7000/report/' + taskId + '/' + deviceIp.replace(/\./g, '_') + '/trace'
+      // url = 'http://10.240.172.253:7000/report/local_task/local_device/trace'
+      $.get(url).then(ret => {
+        this.trace_count = ret.trace_info.trace_count;
+        if (ret.trace_info.traces.length === 0) {
+          this.tableData.push({
+            errorType: '',
+            errorTime: '',
+            errorContent: '暂无数据',
+            errorCount: ''
+          });
+        } else {
+          for (var i = 0; i < ret.trace_info.traces.length; i++) {
             this.tableData.push({
-              errorType: '',
-              errorTime: '',
-              errorContent: '暂无数据',
-              errorCount: ''
+              errorType: ret.trace_info.traces_type[i],
+              errorTime: ret.trace_info.traces_time[i],
+              errorContent: ret.trace_info.traces[i],
+              errorCount: ret.trace_info.traces_count[i]
             });
-          } else {
-            for (var i = 0; i < ret.trace_info.traces.length; i++) {
-              this.tableData.push({
-                errorType: ret.trace_info.traces_type[i],
-                errorTime: ret.trace_info.traces_time[i],
-                errorContent: ret.trace_info.traces[i],
-                errorCount: ret.trace_info.traces_count[i]
-              });
-            }
           }
-        });
-      },
-      gotoProcess(row) {
-        this.$router.push({
-          name: 'Progress',
-          params: {
-            time: row.errorTime
-          }
-        })
-      }
+        }
+      });
     },
-    mounted() {
-      this.getTrace();
+    gotoProcess(row) {
+      this.$router.push({
+        name: 'Progress',
+        params: {
+          time: row.errorTime
+        }
+      })
     }
-  };
+  },
+  mounted() {
+    this.getTrace();
+  }
+};
 </script>
 <style>
   #trace-title {

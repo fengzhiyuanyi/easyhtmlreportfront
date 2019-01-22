@@ -101,8 +101,13 @@ export default {
     }
   },
   created(){
+    let _this = this
+    let taskId = _this.$route.query.taskId
+    let deviceIp = _this.$route.query.deviceIp
+    var url = 'http://10.240.172.253:7000/report/' + taskId + '/' + deviceIp.replace(/\./g, '_') + '/record'
+    // url = 'http://10.240.172.253:7000/report/local_task/local_device/record'
     $.ajax({
-      url: 'http://10.240.172.253:7000/report/local_task/local_device/record',
+      url: url,
       async: false,
       success: (response) => {
         this.swiperData = response.data.steps;

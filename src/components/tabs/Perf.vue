@@ -20,13 +20,18 @@
 import Papa from "papaparse";
 import echarts from "echarts";
 export default {
-  data() {
+  data () {
     return {
-      data: ""
+      data: ''
     };
   },
-  mounted: () => {
-    Papa.parse('http://10.240.172.253:7000/report/local_task/local_device/perf', {
+  mounted: function() {
+    let _this = this
+    let taskId = _this.$route.query.taskId
+    let deviceIp = _this.$route.query.deviceIp
+    let url = 'http://10.240.172.253:7000/report/' + taskId + '/' + deviceIp.replace(/\./g, '_') + '/perf'
+    // let url = 'http://10.240.172.253:7000/report/local_task/local_device/perf'
+    Papa.parse(url, {
       download: true,
       complete: results => {
         results = results.data;

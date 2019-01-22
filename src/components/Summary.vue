@@ -6,10 +6,11 @@
           <b>应用信息</b>
         </div>
         <div class="pull-right div-btn" v-if="isReport()">
-          <router-link to="/report">
+          <router-link
+            :to="{path:'/report', query:{taskId:this.$route.query.taskId, deviceIp:this.$route.query.deviceIp}}">
             <el-button type="primary" icon="el-icon-document">生成PDF</el-button>
           </router-link>
-          <a style="margin-left: 10px" href='http://10.240.172.253:7000/report/local_task/local_device/log'>
+          <a style="margin-left: 10px" :href='logUrl'>
             <el-button type="primary" icon="el-icon-download">游戏log</el-button>
           </a>
         </div>
@@ -68,7 +69,7 @@
             <!-- 1:20:20 s -->
           </li>
         </ul>
-        <ul class="information_box_name information_box_name2">
+        <ul class="information_box_name">
           <li>
             <b>测试状态:</b>
             <span>成功</span>
@@ -113,12 +114,26 @@ export default {
       }
     };
   },
-  mounted() {
-    // let _this = this;
-    $.get('http://10.240.172.253:7000/report/local_task/local_device/info').then(ret => {
-			this.info = ret;
-			this.info.basic_info.app_info.size = this.getFileSize(this.info.basic_info.app_info.size);
+  computed: {
+    logUrl () {
+      let _this = this
+      let taskId = _this.$route.query.taskId
+      let deviceIp = _this.$route.query.deviceIp
+      let url = 'http://10.240.172.253:7000/report/' + taskId + '/' + deviceIp.replace(/\./g, '_') + '/log'
+      return url
+    }
+  },
+  mounted () {
+    let _this = this;
+    let taskId = _this.$route.query.taskId
+    let deviceIp = _this.$route.query.deviceIp
+    let url = 'http://10.240.172.253:7000/report/' + taskId + '/' + deviceIp.replace(/\./g, '_') + '/info'
+    // url = 'http://10.240.172.253:7000/report/local_task/local_device/info'
+    $.get(url).then(ret => {
+      this.info = ret;
+      this.info.basic_info.app_info.size = this.getFileSize(this.info.basic_info.app_info.size);
     });
+    _this.readyPdf()
   },
   methods: {
     getFileSize(fileByte) {

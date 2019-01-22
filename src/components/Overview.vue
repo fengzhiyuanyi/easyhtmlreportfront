@@ -5,7 +5,7 @@
       <div class="Application_cont">
         <div id="con">
           <section class="information_Presentation" style="display: block;">
-            <resultwpage></resultwpage>
+            <resultpage></resultpage>
           </section>
         </div>
       </div>
@@ -16,7 +16,7 @@
 
 <script>
 import headpage from './Header'
-import resultwpage from './report/Result'
+import resultpage from './report/Result'
 
 export default {
   data () {
@@ -24,7 +24,7 @@ export default {
   },
   components: {
     headpage,
-    resultwpage,
+    resultpage,
   }
 
 }

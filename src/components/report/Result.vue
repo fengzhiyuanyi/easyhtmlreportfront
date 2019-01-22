@@ -7,6 +7,9 @@
             <el-col :span="8">
                <p>测试结果</p>
             </el-col>
+            <div class="pull-right">
+              <el-button :disabled="!pdfStatus" @click="downPdf" type="primary" icon="el-icon-document">生成PDF</el-button>
+            </div>
           </el-row>
           <el-row class="rowtext" style="text-align: center">
             <el-col :span="8">
@@ -71,10 +74,19 @@
               <p>{{task.duration}}</p>
             </el-col>
             <el-col :span="6">
-              <a target="_blank" v-if="task.jenkinsEnvironment"
-                     :href='task.jenkinsEnvironment.BUILD_URL + "HTML_Report"'>
-                    <i class="fa fa-bar-chart"></i>
-                  </a>
+                <router-link
+                   v-if="task.jenkinsEnvironment"
+                   :to="{path:'/screenshot', query:{taskId:task.jenkinsEnvironment.BUILD_ID, deviceIp:task.device.ip}}"
+                   tag="a"
+                   target="_blank">
+                  <i class="fa fa-bar-chart"></i>
+                </router-link>
+              <!--<a target="_blank" v-if="task.jenkinsEnvironment"-->
+                 <!--@click="goToDeviceReport(task.jenkinsEnvironment.BUILD_ID, task.device.ip)">-->
+                     <!--&lt;!&ndash;:href='task.jenkinsEnvironment.BUILD_URL + "HTML_Report"'>&ndash;&gt;-->
+                     <!--&lt;!&ndash;:href='task.jenkinsEnvironment.BUILD_ID + "HTML_Report"'>&ndash;&gt;-->
+                    <!--<i class="fa fa-bar-chart"></i>-->
+                  <!--</a>-->
             </el-col>
           </el-row>
         </el-col>
@@ -164,6 +176,7 @@ import $ from 'jquery'
 export default {
   data () {
     return {
+      pdfStatus: false,
       stages: [
         {
           prop: 'Checkout',
@@ -215,44 +228,46 @@ export default {
           log_link: '',
           exception: '',
           device: {
-            brand: '努比亚z17',
-            model: 'test'
+            brand: '',
+            model: '-',
+            ip: ''
           },
-          result: 'success',
-          duration: '01:03:03',
+          result: '-',
+          duration: '-',
           jenkinsEnvironment: {
-            BUILD_URL: ''
+            BUILD_URL: '',
+            BUILD_ID: ''
           },
           stages: [
             {
               name: 'Checkout',
-              status: 'SUCCESS',
-              duration: '00:00:03'
+              status: '-',
+              duration: ''
             },
             {
               name: 'setUp',
-              status: 'SUCCESS',
-              duration: '00:01:03'
+              status: '-',
+              duration: ''
             },
             {
               name: 'Install APK',
-              status: 'SUCCESS',
-              duration: '00:02:03'
+              status: '-',
+              duration: ''
             },
             {
               name: 'Monkey-Test',
-              status: 'IN_PROGRESS',
-              duration: '01:00:00'
+              status: '-',
+              duration: ''
             },
             {
               name: 'handle_exception',
-              status: 'SUCCESS',
-              duration: '01:04:03'
+              status: '-',
+              duration: ''
             },
             {
               name: 'tearDown',
-              status: 'FAILURE',
-              duration: '02:00:00'
+              status: '-',
+              duration: ''
             }
           ]
         }
@@ -291,11 +306,14 @@ export default {
     let _this = this
     _this.getData()
     _this.draw()
+    _this.readyPdf()
   },
   methods: {
     getData: function () {
       let _this = this
-      $.get('http://10.240.172.253:7000/suites/1105ce3c-775b-46d0-94a1-39cfcfca0e80').then(ret => {
+      let url = 'http://10.240.172.253:7000/suites/' + this.$route.params.id
+      // let url = 'http://10.240.172.253:7000/suites/1105ce3c-775b-46d0-94a1-39cfcfca0e80'
+      $.get(url).then(ret => {
         _this.result = ret.result
         _this.task_list = ret.task_list
       })
@@ -652,7 +670,19 @@ export default {
           return 'background-color: #cf4b52'
         }
       }
+    },
+    downPdf: function () {
+      this.getPdf()
+    },
+    readyPdf: function () {
+      let _this = this
+      setTimeout(function () {
+        _this.pdfStatus = true
+      }, 5000)
     }
+    // goToDeviceReport: function (taskId, deviceIp) {
+    //   this.$router.push({path: `//${taskId}/${deviceIp}`})
+    // }
   }
 }
 </script>

@@ -21,8 +21,10 @@
       tracePage
     },
     mounted: function() {
-      settT
-      this.getPdf()
+      let _this = this
+      setTimeout(function () {
+        _this.getPdf()
+      }, 5000)
     }
   }
 </script>
