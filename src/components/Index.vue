@@ -92,6 +92,7 @@
 </template>
 
 <script>
+  import global from "@/components/Global"
   export default {
     name: "Index",
     data() {
@@ -105,7 +106,7 @@
     mounted: function () {
       var _this = this
       $.ajax({
-        url: "http://10.240.169.75:7000",
+        url: global.HOST,
         type: "get",
         success: function (result) {
           if (result.success) {
@@ -133,7 +134,7 @@
       alertConfirm() {
         $.ajax({
           method: "delete",
-          url: "http://10.240.169.75:7000/templates/" + this.templates[this.currentRow].id,
+          url: global.HOST + "/templates/" + this.templates[this.currentRow].id,
         })
           .done(function (ret) {
             this.dialogVisible = false;

@@ -86,6 +86,7 @@
 
 <script>
 import $ from "jquery";
+import global from "@/components/Global"
 export default {
   data() {
     return {
@@ -119,7 +120,7 @@ export default {
       let _this = this
       let taskId = _this.$route.query.taskId
       let deviceIp = _this.$route.query.deviceIp
-      let url = 'http://10.240.172.253:7000/report/' + taskId + '/' + deviceIp.replace(/\./g, '_') + '/log'
+      let url = global.HOST + '/report/' + taskId + '/' + deviceIp.replace(/\./g, '_') + '/log'
       return url
     }
   },
@@ -127,8 +128,8 @@ export default {
     let _this = this;
     let taskId = _this.$route.query.taskId
     let deviceIp = _this.$route.query.deviceIp
-    let url = 'http://10.240.172.253:7000/report/' + taskId + '/' + deviceIp.replace(/\./g, '_') + '/info'
-    // url = 'http://10.240.172.253:7000/report/local_task/local_device/info'
+    let url = global.HOST + '/report/' + taskId + '/' + deviceIp.replace(/\./g, '_') + '/info'
+    // url = global.HOST + '/report/local_task/local_device/info'
     $.get(url).then(ret => {
       this.info = ret;
       this.info.basic_info.app_info.size = this.getFileSize(this.info.basic_info.app_info.size);

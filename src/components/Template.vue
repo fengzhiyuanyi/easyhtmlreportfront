@@ -227,6 +227,7 @@
 </template>
 
 <script>
+  import global from "@/components/Global"
   export default {
     name: "Template",
     data() {
@@ -300,7 +301,7 @@
       getTemplateDetail(id) {
         var _this = this;
         $.ajax({
-          url: "http://10.240.169.75:7000/templates/" + id,
+          url: global.HOST + "/templates/" + id,
           type: "get",
           success: function (result) {
             if (result.success) {
@@ -320,7 +321,7 @@
         });
       },
       refreshDevices(nocache) {
-        var url = nocache ? "http://10.240.169.75:7000/devices?cache=false" : "http://10.240.169.75:7000/devices";
+        var url = nocache ? global.HOST + "/devices?cache=false" : global.HOST + "/devices";
         $.ajax({
           url: url,
           dataType: "json",
@@ -377,7 +378,7 @@
               scheduler: this.mScheduler,
             }
             $.ajax({
-              url: "http://10.240.169.75:7000/schedulers",
+              url: global.HOST + "/schedulers",
               method: "post",
               data: JSON.stringify(data),
               contentType: "application/json",
@@ -409,7 +410,7 @@
           scheduler: this.mScheduler,
         };
         $.ajax({
-          url: "http://10.240.169.75:7000/schedulers",
+          url: global.HOST + "/schedulers",
           method: "delete",
           data: JSON.stringify(data),
           contentType: "application/json",
@@ -426,7 +427,7 @@
       saveAndTest: function (ev) {
         if (this.isEasetestValid()) {
           $.ajax({
-            url: "http://10.240.169.75:7000/templates/-",
+            url: global.HOST + "/templates/-",
             method: "post",
             data: JSON.stringify(this.$data),
             contentType: "application/json",
@@ -444,7 +445,7 @@
             .then(function (ret) {
               if (ret.success) {
                 return $.ajax({
-                  url: "http://10.240.169.75:7000/templates/" + this.id + "/build",
+                  url: global.HOST + "/templates/" + this.id + "/build",
                   method: "post",
                 })
               } else {
@@ -481,7 +482,7 @@
       saveConfiguration: function (ev) {
         if (this.isEasetestValid()) {
           $.ajax({
-            url: "http://10.240.169.75:7000/templates/-",
+            url: global.HOST + "/templates/-",
             method: "post",
             data: JSON.stringify(this.$data),
             contentType: "application/json",

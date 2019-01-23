@@ -22,6 +22,7 @@
 <script>
 import { jqPaginator } from "../../assets/jqpaginator.min.js";
 import $ from "jquery";
+import global from "@/components/Global"
 export default {
   data() {
     return {
@@ -54,8 +55,8 @@ export default {
       let _this = this;
       let taskId = _this.$route.query.taskId
       let deviceIp = _this.$route.query.deviceIp
-      let url = 'http://10.240.172.253:7000/report/' + taskId + '/' + deviceIp.replace(/\./g, '_') + '/record'
-      // url = 'http://10.240.172.253:7000/report/local_task/local_device/record'
+      let url = global.HOST + '/report/' + taskId + '/' + deviceIp.replace(/\./g, '_') + '/record'
+      // url = global.HOST + '/report/local_task/local_device/record'
       $.get(url).then(ret => {
         _this.totaldata = ret.data.steps;
         _this.totalCount = ret.data.steps.length;

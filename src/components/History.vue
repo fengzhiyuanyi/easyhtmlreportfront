@@ -112,6 +112,7 @@
 </template>
 
 <script>
+  import global from "@/components/Global"
   export default {
     name: "History",
     data() {
@@ -128,7 +129,7 @@
       getHistoryDetail(){
         var _this = this;
         $.ajax({
-          url: "http://10.240.169.75:7000/history/" + this.id,
+          url: global.HOST + "/history/" + this.id,
           type: "get",
           success: function (result) {
             if (result.success) {

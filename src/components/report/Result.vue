@@ -172,6 +172,7 @@
 <script>
 import echarts from 'echarts'
 import $ from 'jquery'
+import global from "@/components/Global"
 
 export default {
   data () {
@@ -311,8 +312,8 @@ export default {
   methods: {
     getData: function () {
       let _this = this
-      let url = 'http://10.240.172.253:7000/suites/' + this.$route.params.id
-      // let url = 'http://10.240.172.253:7000/suites/1105ce3c-775b-46d0-94a1-39cfcfca0e80'
+      let url = global.HOST + '/suites/' + this.$route.params.id
+      // let url = global.HOST + '/suites/1105ce3c-775b-46d0-94a1-39cfcfca0e80'
       $.get(url).then(ret => {
         _this.result = ret.result
         _this.task_list = ret.task_list
