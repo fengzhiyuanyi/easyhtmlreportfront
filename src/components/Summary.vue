@@ -7,7 +7,7 @@
         </div>
         <div class="pull-right div-btn" v-if="isReport()">
           <router-link
-            :to="{path:'/report', query:{taskId:this.$route.query.taskId, deviceIp:this.$route.query.deviceIp}}">
+            :to="{path:'/pdf', query:{taskId:this.$route.query.taskId, deviceIp:this.$route.query.deviceIp}}">
             <el-button type="primary" icon="el-icon-document">生成PDF</el-button>
           </router-link>
           <a style="margin-left: 10px" :href='logUrl'>

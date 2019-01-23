@@ -16,45 +16,49 @@ Vue.use(Router)
 export default new Router({
   routes: [
     {
+      path: '/index',
+      name: 'Index',
+      component: Index
+    },
+    {
       path: '/',
+      redirect: '/index'
+    },
+    {
+      path: '/report',
       name: 'Report',
       component: Report,
       children: [
         {
-          path: '/',
-          redirect: '/screenshot'
+          path: '/report',
+          redirect: '/report/screenshot'
         },
         {
-          path: '/perf',
+          path: '/report/perf',
           name: 'Perf',
           component: Perf
         },
         {
-          path: '/trace',
+          path: '/report/trace',
           name: 'Trace',
           component: Trace
         },
         {
-          path: '/screenshot',
+          path: '/report/screenshot',
           name: 'screenshot',
           component: screenshot
         },
         {
-          path: '/progress',
+          path: '/report/progress',
           name: 'Progress',
           component: Progress
         }
       ]
     },
     {
-      path: '/report',
+      path: '/pdf',
       name: 'Pdf',
       component: Pdf
-    },
-    {
-      path: '/index',
-      name: 'Index',
-      component: Index
     },
     {
 

@@ -10,10 +10,10 @@
             <!--<router-link to="/progress" tag="li">测试步骤</router-link>-->
             <!--<router-link to="/perf" tag="li">性能数据</router-link>-->
             <!--<router-link to="/trace" tag="li">Trace收集</router-link>-->
-            <router-link :to="{path:'/screenshot', query:{taskId:this.$route.query.taskId, deviceIp:this.$route.query.deviceIp}}" tag="li">游戏截图</router-link>
-            <router-link :to="{path:'/progress', query:{taskId:this.$route.query.taskId, deviceIp:this.$route.query.deviceIp}}" tag="li">测试步骤</router-link>
-            <router-link :to="{path:'/perf', query:{taskId:this.$route.query.taskId, deviceIp:this.$route.query.deviceIp}}" tag="li">性能数据</router-link>
-            <router-link :to="{path:'/trace', query:{taskId:this.$route.query.taskId, deviceIp:this.$route.query.deviceIp}}" tag="li">Trace收集</router-link>
+            <router-link :to="{path:'/report/screenshot', query:{taskId:this.$route.query.taskId, deviceIp:this.$route.query.deviceIp}}" tag="li">游戏截图</router-link>
+            <router-link :to="{path:'/report/progress', query:{taskId:this.$route.query.taskId, deviceIp:this.$route.query.deviceIp}}" tag="li">测试步骤</router-link>
+            <router-link :to="{path:'/report/perf', query:{taskId:this.$route.query.taskId, deviceIp:this.$route.query.deviceIp}}" tag="li">性能数据</router-link>
+            <router-link :to="{path:'/report/trace', query:{taskId:this.$route.query.taskId, deviceIp:this.$route.query.deviceIp}}" tag="li">Trace收集</router-link>
           </ul>
         </div>
         <div id="con">

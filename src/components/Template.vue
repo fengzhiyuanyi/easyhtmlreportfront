@@ -1,5 +1,14 @@
 <template>
   <div>
+    <el-dialog
+      title="提示"
+      :visible.sync="mDialogVisible"
+      width="30%">
+      <span>{{mAlertTip}}</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="mDialogVisible=false">确 定</el-button>
+      </span>
+    </el-dialog>
     <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
       <div class="container">
         <a href="#" class="navbar-brand font-weight-normal">
@@ -52,7 +61,7 @@
           </div>
 
           <div>
-            <div v-show="runConfiguration.hasScheduler" v-for="v in runConfiguration.scheduler">
+            <div v-show="runConfiguration.scheduler" v-for="v in runConfiguration.scheduler">
               <label v-text="v.value" class="text-center"></label>
               <i class="fa fa-trash" style="margin-left: 20px" @click="removeScheduler(v)"></i>
             </div>
@@ -233,6 +242,8 @@
       return {
         id: this.$route.params.id,
         title: "",
+        mDialogVisible: false,
+        mAlertTip: "",
         mTitleValid: false,
         location: {
           location: "",
@@ -245,9 +256,7 @@
             trigger: "interval",
             value: "",
           },
-          scheduler: [],
-          hasScheduler: false,
-          scheduleOn: false
+          scheduler: []
         },
         normalConfiguration: {
           notifications: [],
@@ -346,35 +355,35 @@
       },
       addScheduler: function () {
         var valid = false;
-        switch (this.mScheduler.trigger) {
+        switch (this.runConfiguration.mScheduler.trigger) {
           case "interval":
-            var delayTime = parseInt(this.mScheduler.value);
+            var delayTime = parseInt(this.runConfiguration.mScheduler.value);
             if (delayTime && delayTime > 0) {
               var date = new Date();
               var min = date.getMinutes();
               date.setMinutes(min + delayTime);
-              this.mScheduler.trigger = "date";
-              this.mScheduler.value = this.dateFormat(date.toString());
+              this.runConfiguration.mScheduler.trigger = "date";
+              this.runConfiguration.mScheduler.value = this.dateFormat(date.toString());
               valid = true;
             }
             break;
           case "date":
-            if (this.isValidDate(this.mScheduler.value)) {
+            if (this.isValidDate(this.runConfiguration.mScheduler.value)) {
               valid = true;
             }
             break;
           case "cron":
-            var params = this.mScheduler.value.split(" ");
+            var params = this.runConfiguration.mScheduler.value.split(" ");
             if (params.length === 5) {
               valid = true;
             }
             break;
         }
         if (valid === true) {
-          if (this.id != null) {
+          if (this.id != null && this.id !== '-') {
             var data = {
               id: this.id,
-              scheduler: this.mScheduler,
+              scheduler: this.runConfiguration.mScheduler,
             }
             $.ajax({
               url: "http://10.240.169.75:7000/schedulers",
@@ -384,29 +393,28 @@
               dataType: "json",
             }).then(function (ret) {
               if (ret.success === false) {
-                alert(ret.description)
+                this.showAlert(ret.description);
               } else {
-                this.scheduler.push({
-                  id: ret.id + this.mScheduler.value,
-                  trigger: this.mScheduler.trigger,
-                  value: this.mScheduler.value,
+                this.runConfiguration.scheduler.push({
+                  id: ret.id + this.runConfiguration.mScheduler.value,
+                  trigger: this.runConfiguration.mScheduler.trigger,
+                  value: this.runConfiguration.mScheduler.value,
                 });
-                this.hasScheduler = true;
                 this.id = ret.id;
               }
             }.bind(this))
           } else {
-            alert("请先创建模板！")
+            this.showAlert("需要先创建模板并保存，才能创建定时任务。");
           }
         } else {
-          alert("请检查输入格式！")
+          this.showAlert("请按照提示输入相应格式的内容。");
         }
       },
       removeScheduler: function (s) {
-        this.mScheduler.id = s.id;
+        this.runConfiguration.mScheduler.id = s.id;
         var data = {
           id: this.id,
-          scheduler: this.mScheduler,
+          scheduler: this.runConfiguration.mScheduler,
         };
         $.ajax({
           url: "http://10.240.169.75:7000/schedulers",
@@ -416,9 +424,9 @@
           dataType: "json",
         }).then(function (ret) {
           if (ret.success === false) {
-            alert(ret.description)
+            this.showAlert(ret.description);
           }
-          this.scheduler = this.scheduler.filter(function (v) {
+          this.runConfiguration.scheduler = this.runConfiguration.scheduler.filter(function (v) {
             return s !== v;
           })
         }.bind(this))
@@ -437,7 +445,7 @@
               this.id = ret.id;
               return ret;
             } else {
-              alert(ret.mesg);
+              this.showAlert(ret.mesg);
               return ret;
             }
           }.bind(this))
@@ -453,19 +461,18 @@
             }.bind(this))
             .then(function (ret) {
               if (ret.success)
-                alert("测试触发成功，进度消息将会通过POPO通知到你。现在你可以去打游戏喝咖啡了 ^_^");
+                this.showAlert("测试触发成功，进度消息将会通过POPO通知到你。现在你可以去打游戏喝咖啡了 ^_^");
               else {
                 return ret;
               }
-              // location.pathname = location.pathname + "/history"
             })
         } else {
-          alert("请检查TestEase的配置是否有效！")
+          this.showAlert("请检查TestEase的配置是否有效！");
         }
       },
       isEasetestValid: function () {
         var success = true;
-        if (this.normalConfiguration.downloadType === "testease") {
+        if ("TestEase" === this.normalConfiguration.downloadType) {
           var testUrl = "http://test.nie.netease.com/api/projects/" + this.normalConfiguration.testeaseId + "/apps/latest?private_token=" + this.normalConfiguration.testeaseToken + "&branch=" + this.normalConfiguration.testeaseBranch + "&stable=0";
           $.ajax({
             url: testUrl,
@@ -491,15 +498,14 @@
               history.replaceState({}, "K", "/templates/" + ret.id);
               this.id = ret.id;
               $(window).scrollTop(0);
-              alert("保存成功")
+              this.showAlert("保存成功");
             } else {
-              alert(ret.mesg);
+              this.showAlert(ret.mesg);
             }
 
           }.bind(this))
-          // alert("There is no database now, so this is not finished yet.")
         } else {
-          alert("请检查TestEase的配置是否有效！")
+          this.showAlert("保存之前需要先确保TestEase的配置有效，请参照提示重新配置！");
         }
       },
       updatePopoUsers: function (e, trim) {
@@ -535,6 +541,10 @@
         var min = dt.getMinutes();
         var s = dt.getSeconds();
         return `${y}-${m}-${d} ${h}:${min}:${s}`;
+      },
+      showAlert(msg){
+        this.mDialogVisible = true;
+        this.mAlertTip = msg;
       },
       isValidDate(dateStr) {
         if (dateStr === undefined) {
@@ -595,6 +605,10 @@
   nav a {
     font-size: small;
     color: #777;
+  }
+
+  span .el-button {
+    padding: 0;
   }
 
 </style>
