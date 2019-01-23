@@ -3,11 +3,11 @@
 
     <el-dialog
       title="提示"
-      :visible.sync="dialogVisible"
+      :visible.sync="mDialogVisible"
       width="30%">
-      <span>{{alertTip}}</span>
+      <span>{{mAlertTip}}</span>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="alertCancel">取 消</el-button>
+        <el-button @click="mDialogVisible=false">取 消</el-button>
         <el-button @click="alertConfirm">确 定</el-button>
       </span>
     </el-dialog>
@@ -98,8 +98,8 @@
     data() {
       return {
         templates: [],
-        dialogVisible: false,
-        alertTip: "",
+        mDialogVisible: false,
+        mAlertTip: "",
         currentRow: 0
       }
     },
@@ -127,8 +127,8 @@
         return this.moment(time).fromNow();
       },
       deleteTemplate(index, rows) {
-        this.alertTip = "确认删除 \"" + rows[index].title + "\" ?"
-        this.dialogVisible = true
+        this.mAlertTip = "确认删除 \"" + rows[index].title + "\" ?"
+        this.mDialogVisible = true
         this.currentRow = index;
       },
       alertConfirm() {
@@ -137,21 +137,18 @@
           url: global.HOST + "/templates/" + this.templates[this.currentRow].id,
         })
           .done(function (ret) {
-            this.dialogVisible = false;
+            this.mDialogVisible = false;
             if (ret.success) {
-              rows.splice(this.currentRow, 1);
+              this.templates.splice(this.currentRow, 1);
             } else {
               alert(ret.mesg);
             }
           }.bind(this))
           .fail(function (xhr, status, err) {
-            this.dialogVisible = false;
+            this.mDialogVisible = false;
             alert("删除失败: " + status + " " + err)
           });
 
-      },
-      alertCancel() {
-        this.dialogVisible = false;
       },
       filterTag(value, row) {
         return row.tag === value;
