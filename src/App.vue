@@ -6,11 +6,13 @@
 
 <script>
 
-export default {
-  name: "App"
-};
+  export default {
+    name: "App"
+  };
 </script>
 
 <style>
-
+  body {
+    background: #ffffff
+  }
 </style>

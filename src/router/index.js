@@ -8,6 +8,8 @@ import Report from '@/components/Report'
 import Pdf from '@/components/Pdf'
 import Index from '@/components/Index'
 import Overview from '@/components/Overview'
+import Template from '@/components/Template'
+import History from '@/components/History'
 
 Vue.use(Router)
 
@@ -55,9 +57,20 @@ export default new Router({
       component: Index
     },
     {
+
       path: '/overview',
       name: 'Overview',
       component: Overview
+    },
+    {
+      path: '/template/:id',
+      name: 'Template',
+      component: Template
+    },
+    {
+      path: '/history/:id',
+      name: 'History',
+      component: History
     }
   ]
 })
