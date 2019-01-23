@@ -13,26 +13,27 @@
     </el-dialog>
 
     <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
-      <a href="#" class="my-0 mr-md-auto font-weight-normal">
-        <img class="logo sm_img" src="@/assets/APKCI.png" alt style="width: 80px;height: 20px;margin-right: 20px;">
-      </a>
-      <nav class="my-2 my-md-0 mr-md-3">
-        <a class="p-2 text-dark" href="#">模版列表</a>
-        <a class="p-2 text-dark" href="#">创建新模板</a>
-        <a class="p-2 text-dark" target="_blank" href="http://wifiphone.nie.netease.com">
-          设备管理 <i class="fa fa-external-link"></i>
+      <div class="container">
+        <a href="#" class="navbar-brand font-weight-normal">
+          <img class="logo sm_img" src="@/assets/APKCI.png" alt style="width: 80px;height: 20px">
         </a>
-        <a class="p-2 text-dark" target="_blank" href="http://10.246.46.160:8080/job/K-apk-onephone-test-pipeline/">
-          Jenkins <i class="fa fa-external-link"></i>
-        </a>
-        <a class="p-2 text-dark" href="/about">关于
-          <span class="sr-only"></span>
-        </a>
-        <a class="p-2 text-dark" href="/logout">退出
-          <span class="sr-only"></span>
-        </a>
-      </nav>
-      <a class="btn btn-outline-primary" href="#">Sign up</a>
+        <nav class="navbar-brand pull-right">
+          <a class="p-2" href="#"><strong>模版列表</strong></a>
+          <a class="p-2" @click="newTemplate">创建新模板</a>
+          <a class="p-2 " target="_blank" href="http://wifiphone.nie.netease.com">
+            设备管理 <i class="fa fa-external-link"></i>
+          </a>
+          <a class="p-2" target="_blank" href="http://10.246.46.160:8080/job/K-apk-onephone-test-pipeline/">
+            Jenkins <i class="fa fa-external-link"></i>
+          </a>
+          <a class="p-2" href="/about">关于
+            <span class="sr-only"></span>
+          </a>
+          <a class="p-2" href="/logout">退出
+            <span class="sr-only"></span>
+          </a>
+        </nav>
+      </div>
     </div>
     <div class="container">
 
@@ -75,18 +76,10 @@
           width="400">
           <template slot-scope="scope">
             <el-button size="mini" type="primary" icon="el-icon-caret-right">一键测试</el-button>
-            <!--<router-link :to="{ name: 'template', params: {id: scope.row.id}}">-->
-            <!--<router-link :to="{path:`/template/${scope.row.id}`}">-->
-              <!--<el-button size="mini" icon="el-icon-setting">-->
-                <!--<router-link :to="{path:`/template/${scope.row.id}`}">-->
-                  <!--配置-->
-                <!--</router-link>-->
-              <!--</el-button>-->
-            <!--</router-link>-->
             <el-button size="mini" icon="el-icon-setting" @click="jumpToTemplate(scope.row.id)">
-                配置
+              配置
             </el-button>
-            <el-button size="mini" icon="el-icon-time">历史</el-button>
+            <el-button size="mini" icon="el-icon-time" @click="jumpToHistory(scope.row.id)">历史</el-button>
             <el-button size="mini" type="danger" icon="el-icon-delete"
                        @click.native.prevent="deleteTemplate(scope.$index, templates)">删除
             </el-button>
@@ -162,8 +155,14 @@
       filterTag(value, row) {
         return row.tag === value;
       },
-      jumpToTemplate(id){
+      jumpToTemplate(id) {
         this.$router.push({path: `/template/${id}`})
+      },
+      jumpToHistory(id){
+        this.$router.push({path: `/history/${id}`})
+      },
+      newTemplate(){
+        this.$router.push({path: `/template/-`});
       }
 
     },
@@ -174,8 +173,14 @@
 </script>
 
 <style scoped>
+
   .vue-title > i {
     display: none;
+  }
+
+  nav a {
+    font-size: small;
+    color: #777;
   }
 
   .vue-title:hover > i {

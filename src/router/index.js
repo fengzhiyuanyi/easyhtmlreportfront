@@ -8,6 +8,7 @@ import Report from '@/components/Report'
 import Pdf from '@/components/Pdf'
 import Index from '@/components/Index'
 import Template from '@/components/Template'
+import History from '@/components/History'
 
 Vue.use(Router)
 
@@ -58,6 +59,11 @@ export default new Router({
       path: '/template/:id',
       name: 'Template',
       component: Template
+    },
+    {
+      path: '/history/:id',
+      name: 'History',
+      component: History
     }
   ]
 })
