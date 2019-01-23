@@ -26,7 +26,7 @@
           <a class="p-2" target="_blank" href="http://10.246.46.160:8080/job/K-apk-onephone-test-pipeline/">
             Jenkins <i class="fa fa-external-link"></i>
           </a>
-          <a class="p-2" href="/about">关于
+          <a class="p-2" @click="jumpToAbout">关于
             <span class="sr-only"></span>
           </a>
           <a class="p-2" href="/logout">退出
@@ -161,6 +161,9 @@
       },
       newTemplate(){
         this.$router.push({path: `/template/-`});
+      },
+      jumpToAbout(){
+        this.$router.push({path: `/about`});
       }
 
     },

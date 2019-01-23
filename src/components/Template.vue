@@ -17,9 +17,9 @@
         <nav class="navbar-brand">
           <a class="p-2" @click="changeTitle"><strong>{{title || "创建新模板 "}}</strong><i
             class="fa fa-pencil"></i></a>
-          <a class="p-2" href="/about">历史
+          <a class="p-2" @click="jumpToHistory($route.params.id)">历史
           </a>
-          <a class="p-2" href="/about">关于
+          <a class="p-2" @click="jumpToAbout">关于
           </a>
         </nav>
       </div>
@@ -554,6 +554,12 @@
           var reg = /^\d{4}-\d{1,2}-\d{1,2} \d{1,2}:\d{1,2}:\d{1,2}$/;
           return reg.test(dateStr);
         }
+      },
+      jumpToHistory(id){
+        this.$router.push({path: `/history/${id}`})
+      },
+      jumpToAbout(){
+        this.$router.push({path: `/about`})
       }
     },
     filters: {

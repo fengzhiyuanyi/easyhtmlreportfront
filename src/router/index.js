@@ -10,6 +10,7 @@ import Index from '@/components/Index'
 import Overview from '@/components/Overview'
 import Template from '@/components/Template'
 import History from '@/components/History'
+import About from '@/components/About'
 
 Vue.use(Router)
 
@@ -61,8 +62,7 @@ export default new Router({
       component: Pdf
     },
     {
-
-      path: '/overview',
+      path: '/overview/:id',
       name: 'Overview',
       component: Overview
     },
@@ -75,6 +75,11 @@ export default new Router({
       path: '/history/:id',
       name: 'History',
       component: History
+    },
+    {
+      path: '/about',
+      name: 'About',
+      component: About
     }
   ]
 })

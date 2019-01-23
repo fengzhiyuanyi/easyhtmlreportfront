@@ -30,7 +30,7 @@ export default {
     let _this = this
     let taskId = _this.$route.query.taskId
     let deviceIp = _this.$route.query.deviceIp
-    let url = global.HOST + 'report/' + taskId + '/' + deviceIp.replace(/\./g, '_') + '/perf'
+    let url = global.HOST + '/report/' + taskId + '/' + deviceIp.replace(/\./g, '_') + '/perf'
     // let url = global.HOST + '/report/local_task/local_device/perf'
     Papa.parse(url, {
       download: true,
