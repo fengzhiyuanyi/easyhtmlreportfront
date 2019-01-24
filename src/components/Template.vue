@@ -38,7 +38,7 @@
           </el-button>
           <p class="help-block">
             命令行触发
-            <code>curl -X POST {{!location.protocol+"//"+location.host+location.pathname+"/build"}}</code>
+            <code>curl -X POST {{location.protocol+"//"+location.host+location.pathname+"/build"}}</code>
           </p>
         </el-main>
       </el-container>
@@ -246,7 +246,7 @@
         mAlertTip: "",
         mTitleValid: false,
         location: {
-          location: "",
+          protocol: "",
           host: "",
           pathname: ""
         },
@@ -274,7 +274,8 @@
         deviceConfiguration: {
           scriptOn: true,
           mDevices: [],
-          selectedDevices: {}
+          deviceUdids: [],
+          mMissingUdids: [],
         },
         jenkinsConfiguration: {
           environment: "PYTHONIOENCODING=UTF-8",
@@ -296,13 +297,17 @@
         this.mTitleValid = true;
       },
       "deviceConfiguration.mDevices": function (newDevices, oldDevices) {
-        this.$nextTick(() => {
-          for (var i = 0; i < this.deviceConfiguration.mDevices.length; i++) {
-            var value = this.deviceConfiguration.selectedDevices[this.deviceConfiguration.mDevices[i].udid] || false;
-            this.$refs.multipleTable.toggleRowSelection(this.deviceConfiguration.mDevices[i], value);
-            this.deviceConfiguration.selectedDevices[this.deviceConfiguration.mDevices[i].udid] = value;
-          }
-        })
+        if(newDevices !== undefined){
+          this.$nextTick(() => {
+            this.deviceConfiguration.mDevices.forEach((row) => {
+              if (this.deviceConfiguration.deviceUdids.indexOf(row.udid) > -1) {
+                this.$refs.multipleTable.toggleRowSelection(row, true);
+              } else {
+                this.$refs.multipleTable.toggleRowSelection(row, false);
+              }
+            });
+          });
+        }
       }
     },
     methods: {
@@ -316,9 +321,10 @@
               _this.title = result.data.title;
               _this.location = result.data.location;
               _this.mTitleValid = result.data.mTitleValid;
-              _this.runConfiguration = result.data.runConfiguration;
+              _this.runConfiguration.scheduler = result.data.runConfiguration.scheduler;
               _this.normalConfiguration = result.data.normalConfiguration;
-              _this.deviceConfiguration = result.data.deviceConfiguration;
+              _this.deviceConfiguration.deviceUdids = result.data.deviceConfiguration.deviceUdids;
+              _this.deviceConfiguration.scriptOn = result.data.deviceConfiguration.scriptOn;
               _this.jenkinsConfiguration = result.data.jenkinsConfiguration;
               _this.refreshDevices();
             }
@@ -345,7 +351,31 @@
               present: v.present
             }
           });
+          this.deviceConfiguration.mMissingUdids = this.difference(this.deviceConfiguration.deviceUdids, this.deviceConfiguration.mDevices);
+          this.deviceConfiguration.mMissingUdids.forEach(function (v) {
+            this.deviceConfiguration.mDevices.push({
+              udid: v,
+              name: "Missing!!",
+              using: "未知",
+              notes: "danger",
+              serial: "",
+              ip: "未知",
+              present: false
+            })
+          }.bind(this));
         }.bind(this))
+      },
+      difference(deviceUdids, mDevices) {
+        var onlineUdids = mDevices.map(function (v) {
+          return v.udid
+        });
+        return deviceUdids.map(udid => {
+          if (onlineUdids.indexOf(udid) === -1) {
+            return udid;
+          }
+        }).filter(udid => {
+          return udid !== undefined;
+        });
       },
       changeTitle: function () {
         var newTitle = window.prompt("新标题", this.title);
@@ -432,16 +462,19 @@
         }.bind(this))
       },
       saveAndTest: function (ev) {
-        if (this.isEasetestValid()) {
+        var _this = this;
+        this.deviceConfiguration.mMissingUdids = this.difference(this.deviceConfiguration.deviceUdids, this.deviceConfiguration.mDevices);
+        if (this.deviceConfiguration.deviceUdids.length <= this.deviceConfiguration.mMissingUdids.length) {
+          this.showAlert("执行任务必须选择至少一台在线设备！")
+        } else if (this.isEasetestValid()) {
           $.ajax({
-            url: "http://10.240.169.75:7000/templates/-",
+            url: "http://10.240.169.75:7000/templates/" + this.id,
             method: "post",
             data: JSON.stringify(this.$data),
             contentType: "application/json",
             dataType: "json",
           }).then(function (ret) {
             if (ret.success) {
-              history.replaceState({}, "K", "/templates/" + ret.id);
               this.id = ret.id;
               return ret;
             } else {
@@ -461,7 +494,7 @@
             }.bind(this))
             .then(function (ret) {
               if (ret.success)
-                this.showAlert("测试触发成功，进度消息将会通过POPO通知到你。现在你可以去打游戏喝咖啡了 ^_^");
+                _this.showAlert("测试触发成功，进度消息将会通过POPO通知到你。现在你可以去打游戏喝咖啡了 ^_^");
               else {
                 return ret;
               }
@@ -520,14 +553,33 @@
       },
       selectDevices(val) {
         this.deviceConfiguration.mDevices.forEach(row => {
+          this.updateSelectedDeviceUdids(row.udid, val);
           this.$refs.multipleTable.toggleRowSelection(row, val);
-          this.deviceConfiguration.selectedDevices[row.udid] = val;
         });
+      },
+      updateSelectedDeviceUdids(udid, val) {
+        var index = this.deviceConfiguration.deviceUdids.indexOf(udid)
+        if (val) {
+          if (index == -1)
+            this.deviceConfiguration.deviceUdids.push(udid);
+        } else {
+          if (index >= 0) {
+            this.deviceConfiguration.deviceUdids.splice(index, 1);
+          }
+        }
+      },
+      toggleSelectedDeviceUdids(udid) {
+        var index = this.deviceConfiguration.deviceUdids.indexOf(udid);
+        if (index == -1) {
+          this.deviceConfiguration.deviceUdids.push(udid);
+        } else {
+          this.deviceConfiguration.deviceUdids.splice(index, 1);
+        }
       },
       handleDevicesChange(row, event, column) {
         this.deviceConfiguration.mDevices.map((c, i) => {
           if (c.udid === row.udid) {
-            this.deviceConfiguration.selectedDevices[this.deviceConfiguration.mDevices[i].udid] = !this.deviceConfiguration.selectedDevices[this.deviceConfiguration.mDevices[i].udid];
+            this.toggleSelectedDeviceUdids(row.udid);
             this.$refs.multipleTable.toggleRowSelection(row)
           }
         });
@@ -542,7 +594,7 @@
         var s = dt.getSeconds();
         return `${y}-${m}-${d} ${h}:${min}:${s}`;
       },
-      showAlert(msg){
+      showAlert(msg) {
         this.mDialogVisible = true;
         this.mAlertTip = msg;
       },
