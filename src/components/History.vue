@@ -7,11 +7,11 @@
         </a>
         <nav class="navbar-brand">
           <a class="p-2"><strong>{{title}}</strong></a>
-          <a class="p-2" href="/about">编辑</a>
+          <a class="p-2" @click="jumpToTemplate($route.params.id)">编辑</a>
           <a class="p-2" target="_blank" href="http://10.246.46.160:8080/job/K-apk-onephone-test-pipeline/">
             Jenkins <i class="fa fa-external-link"></i>
           </a>
-          <a class="p-2" href="/about">关于
+          <a class="p-2" @click="jumpToAbout">关于
           </a>
         </nav>
       </div>
@@ -27,7 +27,7 @@
               {{timeFormat(suite.createdAt)}}
             </strong>
           </span>
-          <el-button style="float: right; padding: 3px 0" type="text">报告总览</el-button>
+          <el-button style="float: right; padding: 3px 0" type="text" @click="jumpToOverview(suite.id)">报告总览</el-button>
         </div>
         <div style="margin-bottom: 10px" v-if="suite.apkUrl">
           <strong>安装地址:</strong>
@@ -95,9 +95,12 @@
             label="测试报告"
             width="100">
             <template slot-scope="scope">
-              <a target="_blank" :href='scope.row.jenkinsEnvironment.BUILD_URL + "HTML_Report"'>
+              <router-link
+               :to="{path:'/report/screenshot', query:{taskId:scope.row.jenkinsEnvironment.BUILD_ID, deviceIp:scope.row.device.ip}}"
+               tag="a"
+               target="_blank">
                 <i class="fa fa-bar-chart"></i>
-              </a>
+              </router-link>
             </template>
           </el-table-column>
           <el-table-column
@@ -112,6 +115,7 @@
 </template>
 
 <script>
+  import global from "@/components/Global"
   export default {
     name: "History",
     data() {
@@ -128,7 +132,7 @@
       getHistoryDetail(){
         var _this = this;
         $.ajax({
-          url: "http://10.240.169.75:7000/history/" + this.id,
+          url: global.HOST + "/history/" + this.id,
           type: "get",
           success: function (result) {
             if (result.success) {
@@ -197,6 +201,18 @@
           'failure': 'color-red',
           'canceled': 'color-gray',
         }[result];
+      },
+      jumpToTemplate(id) {
+        this.$router.push({path: `/template/${id}`})
+      },
+      jumpToAbout(){
+        this.$router.push({path: `/about`})
+      },
+      jumpToOverview(id){
+        this.$router.push({path: `/overview/${id}`})
+      },
+      jumpToReport(){
+        this.$router.push({path: `/about`})
       }
     },
     filters: {

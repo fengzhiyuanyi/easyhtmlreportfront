@@ -17,9 +17,9 @@
         <nav class="navbar-brand">
           <a class="p-2" @click="changeTitle"><strong>{{title || "创建新模板 "}}</strong><i
             class="fa fa-pencil"></i></a>
-          <a class="p-2" href="/about">历史
+          <a class="p-2" @click="jumpToHistory($route.params.id)">历史
           </a>
-          <a class="p-2" href="/about">关于
+          <a class="p-2" @click="jumpToAbout">关于
           </a>
         </nav>
       </div>
@@ -236,6 +236,7 @@
 </template>
 
 <script>
+  import global from "@/components/Global"
   export default {
     name: "Template",
     data() {
@@ -314,7 +315,7 @@
       getTemplateDetail(id) {
         var _this = this;
         $.ajax({
-          url: "http://10.240.169.75:7000/templates/" + id,
+          url: global.HOST + "/templates/" + id,
           type: "get",
           success: function (result) {
             if (result.success) {
@@ -335,7 +336,7 @@
         });
       },
       refreshDevices(nocache) {
-        var url = nocache ? "http://10.240.169.75:7000/devices?cache=false" : "http://10.240.169.75:7000/devices";
+        var url = nocache ? global.HOST + "/devices?cache=false" : global.HOST + "/devices";
         $.ajax({
           url: url,
           dataType: "json",
@@ -416,7 +417,7 @@
               scheduler: this.runConfiguration.mScheduler,
             }
             $.ajax({
-              url: "http://10.240.169.75:7000/schedulers",
+              url: global.HOST + "/schedulers",
               method: "post",
               data: JSON.stringify(data),
               contentType: "application/json",
@@ -447,7 +448,7 @@
           scheduler: this.runConfiguration.mScheduler,
         };
         $.ajax({
-          url: "http://10.240.169.75:7000/schedulers",
+          url: global.HOST + "/schedulers",
           method: "delete",
           data: JSON.stringify(data),
           contentType: "application/json",
@@ -468,7 +469,7 @@
           this.showAlert("执行任务必须选择至少一台在线设备！")
         } else if (this.isEasetestValid()) {
           $.ajax({
-            url: "http://10.240.169.75:7000/templates/" + this.id,
+            url: global.HOST + "/templates/" + this.id,
             method: "post",
             data: JSON.stringify(this.$data),
             contentType: "application/json",
@@ -485,7 +486,7 @@
             .then(function (ret) {
               if (ret.success) {
                 return $.ajax({
-                  url: "http://10.240.169.75:7000/templates/" + this.id + "/build",
+                  url: global.HOST + "/templates/" + this.id + "/build",
                   method: "post",
                 })
               } else {
@@ -521,7 +522,7 @@
       saveConfiguration: function (ev) {
         if (this.isEasetestValid()) {
           $.ajax({
-            url: "http://10.240.169.75:7000/templates/-",
+            url: global.HOST + "/templates/-",
             method: "post",
             data: JSON.stringify(this.$data),
             contentType: "application/json",
@@ -605,6 +606,12 @@
           var reg = /^\d{4}-\d{1,2}-\d{1,2} \d{1,2}:\d{1,2}:\d{1,2}$/;
           return reg.test(dateStr);
         }
+      },
+      jumpToHistory(id){
+        this.$router.push({path: `/history/${id}`})
+      },
+      jumpToAbout(){
+        this.$router.push({path: `/about`})
       }
     },
     filters: {

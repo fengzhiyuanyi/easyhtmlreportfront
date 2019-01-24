@@ -39,6 +39,7 @@
 import 'swiper/dist/css/swiper.css'
 import { swiper, swiperSlide } from 'vue-awesome-swiper'
 import $ from "jquery";
+import global from "@/components/Global"
 
 export default {
   components: {
@@ -104,8 +105,8 @@ export default {
     let _this = this
     let taskId = _this.$route.query.taskId
     let deviceIp = _this.$route.query.deviceIp
-    var url = 'http://10.240.172.253:7000/report/' + taskId + '/' + deviceIp.replace(/\./g, '_') + '/record'
-    // url = 'http://10.240.172.253:7000/report/local_task/local_device/record'
+    var url = global.HOST + '/report/' + taskId + '/' + deviceIp.replace(/\./g, '_') + '/record'
+    // url = global.HOST + '/report/local_task/local_device/record'
     $.ajax({
       url: url,
       async: false,

@@ -19,6 +19,7 @@
 <script>
 import Papa from "papaparse";
 import echarts from "echarts";
+import global from "@/components/Global"
 export default {
   data () {
     return {
@@ -29,8 +30,8 @@ export default {
     let _this = this
     let taskId = _this.$route.query.taskId
     let deviceIp = _this.$route.query.deviceIp
-    let url = 'http://10.240.172.253:7000/report/' + taskId + '/' + deviceIp.replace(/\./g, '_') + '/perf'
-    // let url = 'http://10.240.172.253:7000/report/local_task/local_device/perf'
+    let url = global.HOST + '/report/' + taskId + '/' + deviceIp.replace(/\./g, '_') + '/perf'
+    // let url = global.HOST + '/report/local_task/local_device/perf'
     Papa.parse(url, {
       download: true,
       complete: results => {
